@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+runs/
+data/*.csv
+!data/ETTh1.csv
+.DS_Store
