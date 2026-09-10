@@ -38,10 +38,10 @@ third_party/timesfm3/   Google's TimesFM-3 torch code (Apache-2.0); one edit: a 
 ```bash
 pip install -r requirements.txt
 python tests/test_all.py
-python scripts/download_data.py electricity                     # optional real bank (95 MB); data/ETTh1.csv is included
+python3 scripts/download_data.py electricity                     # optional real bank (95 MB); data/ETTh1.csv is included
 bash configs/toy_matrix.sh synth                                # methods x rewards on synthetic laws, held-out metrics
 bash configs/toy_matrix.sh csv:data/electricity.csv
-python scripts/run_matrix.py --algo grpo --reward composite --bank csv:data/electricity.csv --steps 4000 --batch 16 --K 8 --out runs/gpu/grpo_composite
+python3 scripts/run_matrix.py --algo grpo --reward composite --bank csv:data/electricity.csv --steps 4000 --batch 16 --K 8 --out runs/gpu/grpo_composite
 ```
 The checkpoint (1.3 GB) downloads on first use into the Hugging Face cache.
 

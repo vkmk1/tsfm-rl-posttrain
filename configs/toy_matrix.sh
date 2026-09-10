@@ -3,7 +3,7 @@
 #   bash configs/toy_matrix.sh synth            # or: bash configs/toy_matrix.sh csv:data/electricity.csv
 set -e
 BANK=${1:-synth}; NAME=$(basename "${BANK#csv:}" .csv); STEPS=${STEPS:-300}; OUT=runs/$NAME; mkdir -p $OUT
-run() { echo "[$(date +%H:%M)] $1"; python scripts/run_matrix.py --bank $BANK --steps $STEPS --out $OUT/$1 "${@:2}"; }
+run() { echo "[$(date +%H:%M)] $1"; python3 scripts/run_matrix.py --bank $BANK --steps $STEPS --out $OUT/$1 "${@:2}"; }
 run native               --algo none
 run sft_pinball          --algo sft        --reward pinball                          # M1  SFT control
 run sft_pinball_seed1    --algo sft        --reward pinball --seed 1                 #     noise bound
@@ -18,4 +18,4 @@ run grpo_skill           --algo grpo       --reward skill
 run grpo_composite       --algo grpo       --reward composite                        # M7  ours
 run grpo_composite_head  --algo grpo       --reward composite --head_adapter         # M7 + our policy class
 run context_ipo          --algo context    --reward composite                        # M8  context policy (frozen forecaster)
-python scripts/make_report.py $OUT > $OUT/report.md; cat $OUT/report.md
+python3 scripts/make_report.py $OUT > $OUT/report.md; cat $OUT/report.md
