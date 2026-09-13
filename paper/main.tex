@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage{iclr2026_conference,times}
 \input{math_commands.tex}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{url}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{booktabs}
@@ -150,6 +150,7 @@ For the newsvendor decision $d_\tau(p)=q_\tau(p)$ with critical fractile $\tau$ 
 \caption{TimesFM-3, synthetic laws, 300 CPU steps, 128 held-out windows, frozen $\to$ post-trained with paired-bootstrap 95\% intervals on the change. Bold: interval excludes zero.}
 \label{tab:audit-tfm}
 \centering\small
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
 cell & MASE & CRPS & 80\% coverage \\
@@ -163,11 +164,10 @@ trajectory preference, IPO (TPO-like, M5) & \textbf{1.101} $(-0.061,-0.023)$ & \
 PPO, composite (M6) & \textbf{1.256} $(+0.082,+0.147)$ & \textbf{0.615} $(+0.137,+0.165)$ & \textbf{0.11} \\
 GRPO, per-sample CRPS & \textbf{1.110} $(-0.049,-0.017)$ & \textbf{0.457} $(-0.012,-0.003)$ & \textbf{0.72} \\
 GRPO, composite (M7) & \textbf{1.109} $(-0.050,-0.018)$ & \textbf{0.456} $(-0.013,-0.004)$ & \textbf{0.73} \\
-\midrule
-\multicolumn{4}{l}{\emph{Electricity (321 clients), same protocol:} frozen MASE 1.376, CRPS 0.237, coverage 0.79;} \\
-\multicolumn{4}{l}{SFT 1.389 / 0.240 / 0.80; GRPO $-$MSE 1.374 / 0.237 / 0.78; GRPO composite 1.371 / 0.237 / 0.77; all intervals include zero.} \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
+\vspace{2pt}
+\begin{minipage}{\linewidth}\footnotesize \emph{Electricity (321 clients), same protocol:} frozen MASE 1.376, CRPS 0.237, coverage 0.79; SFT 1.389 / 0.240 / 0.80; GRPO $-$MSE 1.374 / 0.237 / 0.78; GRPO composite 1.371 / 0.237 / 0.77; all intervals include zero.\end{minipage}
 \end{table}
 
 \begin{figure}[t]
@@ -183,6 +183,7 @@ GRPO, composite (M7) & \textbf{1.109} $(-0.050,-0.018)$ & \textbf{0.456} $(-0.01
 \caption{Pilot on two Chronos families, ETTh1, chronological split, 150 steps, one seed; change from frozen with 95\% paired-bootstrap intervals. Chronos-T5 intervals are wide because its score is itself a 20-sample estimate.}
 \label{tab:pilot}
 \centering\small
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{llccc}
 \toprule
 model & cell & $\Delta$MASE & $\Delta$CRPS & $\Delta$coverage \\
@@ -197,7 +198,7 @@ model & cell & $\Delta$MASE & $\Delta$CRPS & $\Delta$coverage \\
  & GRPO, $-$MSE, LOO & $\mathbf{-0.095}$ $(-0.180,-0.023)$ & $-0.017$ $(-0.036,+0.001)$ & $-0.014$ \\
  & GRPO, set-level CRPS & $+0.001$ $(-0.062,+0.065)$ & $-0.007$ $(-0.026,+0.010)$ & $+0.009$ \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 \subsection{The agent}
@@ -208,6 +209,7 @@ model & cell & $\Delta$MASE & $\Delta$CRPS & $\Delta$coverage \\
 \caption{Planned layout: agent arms, walk-forward, pooled over origins, three seeds. \todo{fill from runs/agent}}
 \label{tab:agent}
 \centering\small
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lcccc}
 \toprule
 arm & CRPS skill vs oracle (95\% CI) & $\Delta$coverage (95\% CI) & calibration tests & regret vs best fixed \\
@@ -220,7 +222,7 @@ SFT+RL agent & \todo{} & \todo{} & \todo{} & \todo{} \\
 RL agent, random reward & \todo{} & \todo{} & \todo{} & \todo{} \\
 supervised PatchTST & \todo{} & \todo{} & \todo{} & --- \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 \subsection{Leaderboards and decisions}
