@@ -17,26 +17,28 @@ import os
 import numpy as np
 import torch
 
-from .model import build_inputs, horizon_quantiles, PATCH
+from .model import PATCH
 from .data import Episode, EpisodeBank
 
 
-def make_policy_fn(policy, device="cpu", context=2048):
+def make_policy_fn(forecaster, device="cpu", context=2048):
+    """forecaster: a tsfm_rl.forecasters.Forecaster (grafts loaded or zeroed). Normalizes per series, restores units."""
     @torch.no_grad()
     def fn(target, past_only, future, H):
-        B, U, T = target.shape; ctx = min(context, (T // PATCH) * PATCH)
-        mu = target[..., -ctx:].mean(-1, keepdim=True); sd = target[..., -ctx:].std(-1, keepdim=True) + 1e-6
-        tgt = (target[..., -ctx:] - mu) / sd
-        po = None if past_only is None else (past_only[..., -ctx:] - past_only[..., -ctx:].mean(-1, keepdim=True)) / (past_only[..., -ctx:].std(-1, keepdim=True) + 1e-6)
+        B, U, T = target.shape; ctx_len = min(context, (T // PATCH) * PATCH); assert U == 1, "one target variate per call"
+        mu = target[..., -ctx_len:].mean(-1, keepdim=True); sd = target[..., -ctx_len:].std(-1, keepdim=True) + 1e-6
+        tgt = ((target[..., -ctx_len:] - mu) / sd)[:, 0]
+        po = None if past_only is None else (past_only[..., -ctx_len:] - past_only[..., -ctx_len:].mean(-1, keepdim=True)) / (past_only[..., -ctx_len:].std(-1, keepdim=True) + 1e-6)
         fu = None
         if future is not None:
-            fh = future[..., :T][..., -ctx:]; m2 = fh.mean(-1, keepdim=True); s2 = fh.std(-1, keepdim=True) + 1e-6
+            fh = future[..., :T][..., -ctx_len:]; m2 = fh.mean(-1, keepdim=True); s2 = fh.std(-1, keepdim=True) + 1e-6
             fu = torch.cat([(fh - m2) / s2, (future[..., T:T + H] - m2) / s2], -1)
-        inputs, roles, cpm, n_ctx = build_inputs(tgt.to(device), None if po is None else po.to(device), None if fu is None else fu.to(device), min(H, 64))
-        out = policy(inputs, roles, cpm); q = horizon_quantiles(out, n_ctx, min(H, 64))[:, :U]
-        if H > 64:   # stitch with the model's own decode for long horizons
-            raise NotImplementedError("use TimesFM3Torch.decode (stitching) for H > 64; wire through Policy.base.decode")
-        return (q.cpu() * sd[..., None] + mu[..., None])
+        if H > 64: raise NotImplementedError("H > 64 needs decode stitching; wire through the model's decode()")
+        d = torch.device(device)
+        ctx = {"target": tgt.to(d), "po": None if po is None else po.to(d), "kf": None if fu is None else fu.to(d), "H": H, "L": ctx_len,
+               "po_pad": None if po is None else torch.zeros(B, po.shape[1], dtype=torch.bool, device=d), "kf_pad": None if fu is None else torch.zeros(B, fu.shape[1], dtype=torch.bool, device=d)}
+        q = forecaster.quantiles(ctx)                                                             # (B, H, 9)
+        return (q.cpu()[:, None] * sd[..., None] + mu[..., None])
     return fn
 
 

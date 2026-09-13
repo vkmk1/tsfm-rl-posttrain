@@ -68,6 +68,16 @@ def interval_score(q, y, alpha=0.2, per_step=False):
 
 
 # ----------------------------------------------------------------------------- calibration
+def pit(q, y):
+    """Probability integral transform of y under the piecewise-linear CDF through the 9 quantiles (B,H); uniform iff calibrated."""
+    qs, _ = q.sort(-1); lv = QLEVELS.to(q.device, q.dtype)
+    below = (y[..., None] >= qs).float().sum(-1)                                   # number of quantiles below y: 0..9
+    lo = qs.gather(-1, (below - 1).clamp(0, 8).long()[..., None])[..., 0]; hi = qs.gather(-1, below.clamp(0, 8).long()[..., None])[..., 0]
+    frac = ((y - lo) / (hi - lo).clamp_min(1e-6)).clamp(0, 1)
+    u = torch.where(below == 0, torch.full_like(frac, 0.05), torch.where(below == 9, torch.full_like(frac, 0.95), 0.1 * below + 0.1 * frac))   # tails: the bin's midpoint
+    return u.clamp(0, 1)
+
+
 def coverage(q, y, alpha=0.2):
     """Empirical coverage of the central (1 - alpha) interval, (B,)."""
     return ((y >= q[..., 0]) & (y <= q[..., -1])).float().mean(-1)
@@ -130,7 +140,28 @@ def composite(q, y, ref_q=None, w_skill=1.0, w_shape=0.25, w_cov=0.25, alpha=0.2
     return w_skill * base + w_shape * directional_accuracy(q, y) + w_cov * cov_term
 
 
-REWARDS = {
+def impratio(q, y, ref_q=None, eps=1e-6):
+    """PostTime's improvement-ratio reward (arXiv 2605.29401, Eq. 6-7) with CRPS as the score:
+    clip_[0,1](0.5 + 0.5 * (1 - CRPS(q,y) / (CRPS(ref,y) + eps))). 0.5 = ties the frozen prior; keeps group variance alive
+    where an absolute exp(-error) reward collapses it. Falls back to the absolute score without a reference."""
+    c = crps_from_quantiles(q, y)
+    if ref_q is None: return -c
+    return (0.5 + 0.5 * (1 - c / (crps_from_quantiles(ref_q, y) + eps))).clamp(0.0, 1.0)
+
+
+def impratio_mae(q, y, ref_q=None, eps=1e-6):
+    """The paper's point version: MAE of the median against the reference's median."""
+    m = mae(q, y)
+    if ref_q is None: return -m
+    return (0.5 + 0.5 * (1 - m / (mae(ref_q, y) + eps))).clamp(0.0, 1.0)
+
+
+def random_reward(q, y, ref_q=None):
+    """Control (Spurious Rewards, arXiv 2506.10947): a reward carrying no information about the forecast."""
+    return torch.rand(q.shape[0], device=q.device)
+
+
+REWARDS = {"random": random_reward, "impratio": impratio, "impratio_mae": impratio_mae, 
     "mse": lambda q, y, ref=None: -mse(q, y),
     "mae": lambda q, y, ref=None: -mae(q, y),
     "pinball": lambda q, y, ref=None: -pinball(q, y),

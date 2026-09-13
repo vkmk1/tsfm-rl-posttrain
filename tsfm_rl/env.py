@@ -3,7 +3,7 @@
     env = ForecastEnv(bank, reward="composite", device="cpu")
     eps = env.reset(batch_size)                       # list of Episode
     actions = [ContextAction.native(e) for e in eps]  # or env.propose(e) for the retrieval strategies
-    q, y, info = env.forecast(policy, actions)        # q (B, H, 9) target-row quantiles, y gold (B, H)
+    q, y, info = env.forecast(forecaster, actions)    # q (B, H, 9) target-row quantiles, y gold (B, H); ctx = env.build(actions) for trainers
     r = env.reward(q, y, ref_q)                       # (B,) from tsfm_rl.rewards
 
 Context actions choose which candidate rows enter as past-only or known-future covariates, the history length,
@@ -16,7 +16,7 @@ from __future__ import annotations
 import dataclasses
 import torch
 
-from .model import build_inputs, horizon_quantiles, PATCH
+from .model import PATCH
 from .rewards import REWARDS
 from .adapters import InContextLagRegression
 
@@ -57,6 +57,7 @@ STRATEGIES = {"shape": strat_shape, "spectrum": strat_spectrum, "seasonality": s
 class ForecastEnv:
     def __init__(self, bank, reward="composite", device="cpu", seed=0):
         self.bank, self.reward_name, self.device = bank, reward, torch.device(device); self.g = torch.Generator().manual_seed(seed); self.icr = InContextLagRegression(32)
+        self.g_prop = torch.Generator().manual_seed(seed + 7)      # proposals draw from their own stream: proposing never changes which episodes come next
 
     def reset(self, batch_size):
         self.eps = self.bank.sample(batch_size, self.g); return self.eps
@@ -64,7 +65,7 @@ class ForecastEnv:
     def propose(self, ep, K=8, m=3):
         acts = [ContextAction.native(ep), ContextAction(rows=[])]
         for name, fn in STRATEGIES.items():
-            rows = fn(ep, m, self.g) if name == "random" else fn(ep, m)
+            rows = fn(ep, m, self.g_prop) if name == "random" else fn(ep, m)
             acts += [ContextAction(rows=rows), ContextAction(rows=rows, estimator_row=True)]
         return acts[:K]
 
@@ -89,28 +90,28 @@ class ForecastEnv:
             if a.detrend:
                 t = torch.arange(L, dtype=torch.float32); tc = t - t.mean(); slope = (tc * (tgt[i, 0] - tgt[i, 0].mean())).sum() / (tc ** 2).sum()
                 tgt[i, 0] = tgt[i, 0] - slope * tc; self._slope[i] = slope
-        inputs, roles, cpm, n_ctx = build_inputs(tgt.to(self.device), po.to(self.device) if n_po else None, kf.to(self.device) if n_kf else None, H)
-        if n_po or n_kf:
-            pad = torch.cat([torch.zeros(B, 1, dtype=torch.bool), po_pad, kf_pad], 1).to(self.device); inputs["masks"] = inputs["masks"] | pad[:, :, None, None]
-        return inputs, roles, cpm, n_ctx
+        d = self.device
+        return {"target": tgt[:, 0].to(d), "po": po.to(d) if n_po else None, "kf": kf.to(d) if n_kf else None, "po_pad": po_pad.to(d), "kf_pad": kf_pad.to(d), "H": H, "L": L}
 
-    def forecast(self, policy, actions=None):
-        """policy: callable(inputs, roles, cpm) -> output dict (a Policy, or the frozen base via base_fn)."""
-        actions = actions or [ContextAction.native(e) for e in self.eps]
-        inputs, roles, cpm, n_ctx = self.build(actions)
-        out = policy(inputs, roles, cpm); q = horizon_quantiles(out, n_ctx, self.bank.H)[:, 0]
-        if self._slope.abs().sum() > 0:
-            L = inputs["values"].shape[2] * PATCH - ((self.bank.H + 63) // 64) * 64; t = torch.arange(1, self.bank.H + 1, dtype=torch.float32, device=q.device)
-            q = q + (self._slope.to(q.device)[:, None] * (t[None] + (L - 1) / 2))[:, :, None]
-        y = torch.stack([e.future for e in self.eps]).to(self.device)
-        info = {"inputs": inputs, "roles": roles, "cpm": cpm, "n_ctx": n_ctx, "history": torch.stack([e.target for e in self.eps]).to(self.device),
+    def gold(self):
+        return torch.stack([e.future for e in self.eps]).to(self.device)
+
+    def info(self, ctx):
+        return {"ctx": ctx, "history": torch.stack([e.target for e in self.eps]).to(self.device),
                 "cond_mean": torch.stack([e.cond_mean for e in self.eps]).to(self.device) if self.eps[0].cond_mean is not None else None}
-        return q, y, info
+
+    def detrend_fix(self, q, ctx):
+        if self._slope.abs().sum() > 0:
+            t = torch.arange(1, self.bank.H + 1, dtype=torch.float32, device=q.device)
+            q = q + (self._slope.to(q.device)[:, None] * (t[None] + (ctx["L"] - 1) / 2))[:, :, None]
+        return q
+
+    def forecast(self, forecaster, actions=None, ctx=None):
+        """forecaster: a tsfm_rl.forecasters.Forecaster -> q (B,H,9), y (B,H), info."""
+        actions = actions or [ContextAction.native(e) for e in self.eps]
+        ctx = ctx or self.build(actions); q = self.detrend_fix(forecaster.quantiles(ctx), ctx)
+        return q, self.gold(), self.info(ctx)
 
     def reward(self, q, y, ref_q=None, name=None):
         return REWARDS[name or self.reward_name](q, y, ref_q)
 
-
-def base_fn(base):
-    """Wrap the frozen base model as a policy-like callable."""
-    return lambda inputs, roles, cpm: base(inputs, patch_cpm_mask=cpm)

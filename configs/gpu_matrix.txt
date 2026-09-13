@@ -1,0 +1,26 @@
+# GPU matrix: one cell per line, `<name> <run_matrix.py args>`; --out is added by launch_gpu.py. Common settings via --extra.
+# Suggested: python3 scripts/launch_gpu.py configs/gpu_matrix.txt --gpus 0-15 --extra "--bank csv:data/electricity.csv --steps 4000 --batch 32 --K 8 --episodes 4096 --heldout 512 --amp --save_every 1000"
+#
+# --- baselines ---
+native                --algo none
+sft_pinball           --algo sft  --reward pinball
+sft_pinball_seed1     --algo sft  --reward pinball --seed 1 --data_seed 0
+sft_crps              --algo sft  --reward crps
+# --- literature recipes (M2-M6) ---
+grpo_mse              --algo grpo --reward mse
+grpo_mse_anchor       --algo grpo --reward mse --anchor 0.1
+grpo_mse_perstep      --algo grpo --reward mse --per_step
+pref_mse              --algo preference --reward mse
+ppo_mse               --algo ppo  --reward mse
+# --- D1: estimator fixes, one change at a time, then combined ---
+grpo_mse_loo          --algo grpo --reward mse --adv_norm loo
+grpo_mse_remax        --algo grpo --reward mse --adv_norm remax
+grpo_set_crps         --algo grpo --set_reward --adv_norm loo
+grpo_mse_fwdkl        --algo grpo --reward mse --kl_dir forward --kl 0.1
+grpo_mse_ema_sampler  --algo grpo --reward mse --adv_norm loo --sampler ema --ema_decay 0.99
+grpo_mse_ema_ref      --algo grpo --reward mse --adv_norm loo --kl_ref ema --ema_decay 0.995 --kl 0.1
+grpo_d1_full          --algo grpo --set_reward --adv_norm loo --sampler ema --ema_decay 0.99 --kl_dir forward --kl 0.1 --eval_ema
+grpo_random_reward    --algo grpo --reward random --adv_norm std       # control: if this collapses too, the cause is the estimator
+ppo_set_crps          --algo ppo  --reward crps --adv_norm none --kl_dir forward --kl 0.1 --ema_decay 0.99 --eval_ema
+# --- M8: context policy (frozen forecaster) ---
+context_ipo           --algo context --reward composite

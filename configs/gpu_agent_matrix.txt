@@ -1,0 +1,17 @@
+# The agent-around-a-frozen-oracle arms (H2 / H3). One arm per claim. --out is added by launch_gpu.py.
+#   python3 scripts/launch_gpu.py configs/gpu_agent_matrix.txt --gpus 0-15 --out runs/agent \
+#     --extra "--bank csv:data/electricity.csv --split walkforward --folds 5 --steps 2000 --batch 16 --episodes 4096 --heldout 512 --proposals 8 --amp"
+# Repeat with --model chronos-2 (covariates) for the second oracle; transfer = evaluate the saved agent.pt on the other oracle (scripts/eval_agent_transfer.py, to add).
+native            --model timesfm3 --algo none
+fixed_context     --model timesfm3 --algo fixed_context
+sft_crps_oracle   --model timesfm3 --algo sft --reward crps
+agent_sft         --model timesfm3 --algo agent_sft    --agent_reward crps
+agent_sft_rl      --model timesfm3 --algo agent_sft_rl --agent_reward crps
+agent_rl_imp      --model timesfm3 --algo agent_sft_rl --agent_reward impratio
+agent_random      --model timesfm3 --algo agent_random
+agent_newsvendor  --model timesfm3 --algo agent_sft_rl --agent_reward newsvendor_tau
+c2_native         --model chronos-2 --algo none
+c2_fixed_context  --model chronos-2 --algo fixed_context
+c2_sft_crps       --model chronos-2 --algo sft --reward crps
+c2_agent_sft_rl   --model chronos-2 --algo agent_sft_rl --agent_reward crps
+c2_agent_random   --model chronos-2 --algo agent_random

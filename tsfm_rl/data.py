@@ -68,14 +68,18 @@ class EpisodeBank:
         self.episodes, self.T, self.H = episodes, T, H
 
     @classmethod
-    def from_csv(cls, path, T=256, H=64, n=512, known_future_frac=0.5, seed=0, max_candidates=8):
+    def from_csv(cls, path, T=256, H=64, n=512, known_future_frac=0.5, seed=0, max_candidates=8, region=(0.0, 1.0), cols=None):
         """The target is a random column per window; the other columns are candidate rows. A fraction of candidates
-        is declared known-future (their gold future is available as a covariate), the rest past-only."""
+        is declared known-future (their gold future is available as a covariate), the rest past-only.
+        region=(a, b): window starts are drawn from the [a, b) fraction of the timeline, so a chronological protocol is
+        train=(0, 0.7), held-out=(0.7 + gap, 1.0) with no window overlap (the runner's --split chrono)."""
         import pandas as pd
         df = pd.read_csv(path); X = torch.tensor(df[[c for c in df.columns if c != "date"]].to_numpy(np.float32))
         N, C = X.shape; g = torch.Generator().manual_seed(seed); eps = []
+        lo, hi = int(region[0] * N), min(int(region[1] * N), N) - T - H; assert hi > lo, f"region {region} too small for T+H={T + H}"
+        pool = list(range(C)) if cols is None else list(cols)                                  # target columns to draw from (OOD split: disjoint pools)
         for _ in range(n):
-            s = int(torch.randint(0, N - T - H, (1,), generator=g)); tgt = int(torch.randint(0, C, (1,), generator=g))
+            s = int(torch.randint(lo, hi, (1,), generator=g)); tgt = pool[int(torch.randint(0, len(pool), (1,), generator=g))]
             w = X[s:s + T + H]; mu = w[:T].mean(0); sd = w[:T].std(0) + 1e-6; w = (w - mu) / sd
             others = [c for c in range(C) if c != tgt][:max_candidates]; known = torch.rand(len(others), generator=g) < known_future_frac
             eps.append(Episode(w[:T, tgt], w[T:, tgt], w[:T, others].T.contiguous(), w[T:, others].T.contiguous(), known, None, {"src": os.path.basename(path), "col": tgt, "start": s}))

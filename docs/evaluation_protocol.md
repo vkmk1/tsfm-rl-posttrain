@@ -34,3 +34,14 @@ reviewers compare directly; it cannot carry the paper.
 a policy through the official harnesses on the test splits (`evaluate_gift_eval`, `evaluate_fev`). Results tables:
 skill score and win rate with bootstrap CIs (fev's `fev.leaderboard`), GIFT-Eval's geometric-mean MASE / CRPS and
 ranks (the harness' `all_results.csv`), coverage and width from our evaluator, and the sample-efficiency curve.
+
+
+## Amendments (12 Sept 2026)
+- Walk-forward is the primary real-data protocol: `--split walkforward --folds 5 --first_origin 0.5` gives rolling forecast
+  origins; at each origin the policy is trained only on windows ending before it (a T+H gap) and scored on the block that
+  follows; `eval.json` carries per-fold and pooled metrics; `scripts/reeval_ci.py` pairs frozen and post-trained per window and
+  bootstraps over all held-out windows across folds. A single chronological split (`--split chrono`) is one fold of this.
+  Holding out a fraction of the series (`--ood_frac`) is a secondary robustness axis, reported separately, never the main split.
+- No fixed tolerances. "Calibration intact" means: the paired-bootstrap interval on the coverage change includes zero, and the
+  binomial test of 80 % coverage against nominal and the KS test of PIT uniformity (`tsfm_rl.evaluate.calibration_tests`,
+  reported as `cal_*` in every eval.json) are not rejected where the frozen model's are not.

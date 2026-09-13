@@ -4,3 +4,12 @@ runs/
 data/*.csv
 !data/ETTh1.csv
 .DS_Store
+
+# paper build artifacts
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.pdf
+paper/*.synctex.gz

@@ -127,4 +127,4 @@ class Policy(nn.Module):
         return [p for p in self.parameters() if p.requires_grad]
 
     def state(self):
-        return {k: v for k, v in self.state_dict().items() if not k.startswith("base.") or k.endswith(".A") or k.endswith(".B")}
+        return {k: v for k, v in self.state_dict().items() if (not k.startswith("base.") and ".base." not in k) or k.endswith(".A") or k.endswith(".B")}   # grafts only: never the wrapped frozen weights

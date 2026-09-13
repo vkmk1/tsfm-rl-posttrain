@@ -1,0 +1,44 @@
+# Multi-model matrix: the same five cells on every forecaster. --out is added by launch_gpu.py; add common settings via --extra
+#   python3 scripts/launch_gpu.py configs/gpu_matrix_models.txt --gpus 0-15 --out runs/models \
+#     --extra "--bank csv:data/electricity.csv --split chrono --steps 3000 --batch 32 --K 8 --episodes 4096 --heldout 512 --amp"
+# layers: TimesFM-3 uses 10-14 of 20; Chronos models fall back to their last third of blocks when the indices exceed the depth.
+timesfm3__native          --model timesfm3 --algo none
+timesfm3__sft             --model timesfm3 --algo sft  --reward pinball
+timesfm3__sft_crps        --model timesfm3 --algo sft  --reward crps
+timesfm3__grpo_mse        --model timesfm3 --algo grpo --reward mse --adv_norm std
+timesfm3__grpo_mse_loo    --model timesfm3 --algo grpo --reward mse --adv_norm loo
+timesfm3__grpo_set_crps   --model timesfm3 --algo grpo --set_reward --adv_norm loo --kl_dir forward --kl 0.05
+timesfm3__grpo_d1_full    --model timesfm3 --algo grpo --set_reward --adv_norm loo --sampler ema --ema_decay 0.99 --kl_dir forward --kl 0.05 --eval_ema
+timesfm3__grpo_random     --model timesfm3 --algo grpo --reward random --adv_norm std
+chronos-2__native          --model chronos-2 --algo none
+chronos-2__sft             --model chronos-2 --algo sft  --reward pinball
+chronos-2__sft_crps        --model chronos-2 --algo sft  --reward crps
+chronos-2__grpo_mse        --model chronos-2 --algo grpo --reward mse --adv_norm std
+chronos-2__grpo_mse_loo    --model chronos-2 --algo grpo --reward mse --adv_norm loo
+chronos-2__grpo_set_crps   --model chronos-2 --algo grpo --set_reward --adv_norm loo --kl_dir forward --kl 0.05
+chronos-2__grpo_d1_full    --model chronos-2 --algo grpo --set_reward --adv_norm loo --sampler ema --ema_decay 0.99 --kl_dir forward --kl 0.05 --eval_ema
+chronos-2__grpo_random     --model chronos-2 --algo grpo --reward random --adv_norm std
+chronos-bolt-base__native          --model chronos-bolt-base --algo none
+chronos-bolt-base__sft             --model chronos-bolt-base --algo sft  --reward pinball
+chronos-bolt-base__sft_crps        --model chronos-bolt-base --algo sft  --reward crps
+chronos-bolt-base__grpo_mse        --model chronos-bolt-base --algo grpo --reward mse --adv_norm std
+chronos-bolt-base__grpo_mse_loo    --model chronos-bolt-base --algo grpo --reward mse --adv_norm loo
+chronos-bolt-base__grpo_set_crps   --model chronos-bolt-base --algo grpo --set_reward --adv_norm loo --kl_dir forward --kl 0.05
+chronos-bolt-base__grpo_d1_full    --model chronos-bolt-base --algo grpo --set_reward --adv_norm loo --sampler ema --ema_decay 0.99 --kl_dir forward --kl 0.05 --eval_ema
+chronos-bolt-base__grpo_random     --model chronos-bolt-base --algo grpo --reward random --adv_norm std
+chronos-t5-small__native          --model chronos-t5-small --algo none
+chronos-t5-small__sft             --model chronos-t5-small --algo sft  --reward pinball
+chronos-t5-small__sft_crps        --model chronos-t5-small --algo sft  --reward crps
+chronos-t5-small__grpo_mse        --model chronos-t5-small --algo grpo --reward mse --adv_norm std
+chronos-t5-small__grpo_mse_loo    --model chronos-t5-small --algo grpo --reward mse --adv_norm loo
+chronos-t5-small__grpo_set_crps   --model chronos-t5-small --algo grpo --set_reward --adv_norm loo --kl_dir forward --kl 0.05
+chronos-t5-small__grpo_d1_full    --model chronos-t5-small --algo grpo --set_reward --adv_norm loo --sampler ema --ema_decay 0.99 --kl_dir forward --kl 0.05 --eval_ema
+chronos-t5-small__grpo_random     --model chronos-t5-small --algo grpo --reward random --adv_norm std
+chronos-t5-base__native          --model chronos-t5-base --algo none
+chronos-t5-base__sft             --model chronos-t5-base --algo sft  --reward pinball
+chronos-t5-base__sft_crps        --model chronos-t5-base --algo sft  --reward crps
+chronos-t5-base__grpo_mse        --model chronos-t5-base --algo grpo --reward mse --adv_norm std
+chronos-t5-base__grpo_mse_loo    --model chronos-t5-base --algo grpo --reward mse --adv_norm loo
+chronos-t5-base__grpo_set_crps   --model chronos-t5-base --algo grpo --set_reward --adv_norm loo --kl_dir forward --kl 0.05
+chronos-t5-base__grpo_d1_full    --model chronos-t5-base --algo grpo --set_reward --adv_norm loo --sampler ema --ema_decay 0.99 --kl_dir forward --kl 0.05 --eval_ema
+chronos-t5-base__grpo_random     --model chronos-t5-base --algo grpo --reward random --adv_norm std
