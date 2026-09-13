@@ -93,6 +93,15 @@ computed exactly over all actions (`--agent_reward crps | impratio | newsvendor_
 `fixed_context` the regret reference. Rewards are proper scores of the delivered distribution, never of samples, so no action is
 rewarded for shrinking a band. `configs/gpu_agent_matrix.txt` holds the arms.
 
+## Review Radar (separate dashboard)
+`python3 scripts/review_radar.py [--refresh]` pulls the public mirror of OpenReview scores (Paper Copilot paperlists, ICLR
+2025–2026), ranks the corpus by similarity to the abstract in `paper/main.tex`, and writes `docs/review_radar.html` +
+`.json`: nearest neighbours with decisions, per-reviewer ratings and sub-scores; the empirical P(accept | mean rating)
+curves overall and in our primary area; text-only rating priors (similarity-weighted kNN, a ridge model with its CV error,
+a logistic acceptance model with its CV AUC); the sub-score profile of accepted vs rejected neighbours; and the gap list
+distilled from the comparables' reviews (`docs/acceptance_assessment.md`). Re-run after every abstract change; the
+corpus cache lives in `~/.cache/tsfm_radar`.
+
 ## Method map
 | # | method | reward / loss | literature anchor |
 |---|---|---|---|

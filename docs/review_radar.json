@@ -1,0 +1,1866 @@
+{
+ "title": "Where Reinforcement Learning Belongs in Post-Training Time-Series Foundation Models",
+ "abstract": "Reinforcement learning (RL) post-training transformed language models, and the first RL recipes for time-series foundation models (TSFMs) have followed the same template: sample forecasts from the model's predictive distribution, reward them by point error, and apply GRPO. We show that this template is ill-posed for a probabilistic forecaster. Any per-sample reward, including a proper scoring rule applied sample by sample, defines an objective that is linear in the predictive distribution and is therefore maximised at a point mass; with a KL penalty the optimum is a tempered reference, still narrower under any point reward. Empirically, every published recipe (TS-GRPO, GTN-R, TimeRFT- and TPO-style training) buys a small point-error gain by shrinking uncertainty: on TimesFM-3, Chronos-T5 and Chronos-Bolt, 80\\% coverage falls from nominal to 0.55--0.73, and to 0.24 with per-step credit, while supervised fine-tuning with the model's own proper loss improves every metric and keeps calibration. A set-level proper reward removes the collapse only for models that genuinely sample (token samplers), and on quantile heads the differentiable loss dominates. We then place RL where it is well-posed: a small agent that chooses the context a frozen oracle is shown and how much to trust it, delivering a linear pool of the oracle's forecast with a calibrated fallback, rewarded by a proper score of the distribution. We prove that this agent cannot be rewarded for overconfidence, that it has O( ) regret against the best fixed context, that pooling never hurts in expectation, and that decision costs with a randomised critical fractile are themselves proper rewards. We release a single implementation covering four oracle families, walk-forward evaluation with paired-bootstrap intervals and calibration tests, and report .",
+ "n_corpus": 21871,
+ "area": "learning on time series and dynamical systems",
+ "area_stats": {
+  "n": 321,
+  "accept_rate": 0.3146417445482866
+ },
+ "curve_all_2026": [
+  {
+   "avg": 2.0,
+   "p": 0.0,
+   "n": 185
+  },
+  {
+   "avg": 2.5,
+   "p": 0.004672897196261682,
+   "n": 428
+  },
+  {
+   "avg": 3.0,
+   "p": 0.009174311926605505,
+   "n": 654
+  },
+  {
+   "avg": 3.5,
+   "p": 0.02976190476190476,
+   "n": 1344
+  },
+  {
+   "avg": 4.0,
+   "p": 0.11788617886178862,
+   "n": 2214
+  },
+  {
+   "avg": 4.5,
+   "p": 0.2842712842712843,
+   "n": 2772
+  },
+  {
+   "avg": 5.0,
+   "p": 0.5393364928909953,
+   "n": 2110
+  },
+  {
+   "avg": 5.5,
+   "p": 0.7880285557386052,
+   "n": 1821
+  },
+  {
+   "avg": 6.0,
+   "p": 0.9322709163346613,
+   "n": 1004
+  },
+  {
+   "avg": 6.5,
+   "p": 0.9698275862068966,
+   "n": 464
+  },
+  {
+   "avg": 7.0,
+   "p": 0.9883040935672515,
+   "n": 171
+  },
+  {
+   "avg": 7.5,
+   "p": 1.0,
+   "n": 72
+  }
+ ],
+ "curve_area_2026": [
+  {
+   "avg": 3.5,
+   "p": 0.0,
+   "n": 37
+  },
+  {
+   "avg": 4.0,
+   "p": 0.16417910447761194,
+   "n": 67
+  },
+  {
+   "avg": 4.5,
+   "p": 0.21428571428571427,
+   "n": 70
+  },
+  {
+   "avg": 5.0,
+   "p": 0.4772727272727273,
+   "n": 44
+  },
+  {
+   "avg": 5.5,
+   "p": 0.7631578947368421,
+   "n": 38
+  },
+  {
+   "avg": 6.0,
+   "p": 0.9,
+   "n": 20
+  }
+ ],
+ "curve_2025": [
+  {
+   "avg": 2.0,
+   "p": 0.0,
+   "n": 31
+  },
+  {
+   "avg": 2.5,
+   "p": 0.0,
+   "n": 67
+  },
+  {
+   "avg": 3.0,
+   "p": 0.0,
+   "n": 192
+  },
+  {
+   "avg": 3.5,
+   "p": 0.0,
+   "n": 338
+  },
+  {
+   "avg": 4.0,
+   "p": 0.007853403141361256,
+   "n": 382
+  },
+  {
+   "avg": 4.5,
+   "p": 0.013937282229965157,
+   "n": 574
+  },
+  {
+   "avg": 5.0,
+   "p": 0.07513661202185792,
+   "n": 732
+  },
+  {
+   "avg": 5.5,
+   "p": 0.19761668321747766,
+   "n": 1007
+  },
+  {
+   "avg": 6.0,
+   "p": 0.7121354656632173,
+   "n": 1063
+  },
+  {
+   "avg": 6.5,
+   "p": 0.9357384441939121,
+   "n": 887
+  },
+  {
+   "avg": 7.0,
+   "p": 0.974609375,
+   "n": 512
+  },
+  {
+   "avg": 7.5,
+   "p": 0.9851632047477745,
+   "n": 337
+  },
+  {
+   "avg": 8.0,
+   "p": 1.0,
+   "n": 120
+  }
+ ],
+ "predictions": {
+  "knn_rating": 4.669249881010957,
+  "knn_accept": 0.45879164320197025,
+  "ridge_rating": 5.1487160303780195,
+  "ridge_cv_mae": 0.8015103332453575,
+  "text_logit_accept": 0.698273619872729,
+  "text_logit_cv_auc": 0.6029716147620579
+ },
+ "profile_accepted": {
+  "soundness": 2.888888888888889,
+  "presentation": 2.8472222222222223,
+  "contribution": 2.6805555555555554,
+  "n": 18,
+  "avg": 5.569444444444445
+ },
+ "profile_rejected": {
+  "soundness": 2.4446969696969694,
+  "presentation": 2.484090909090909,
+  "contribution": 2.262878787878788,
+  "n": 22,
+  "avg": 3.9507575757575752
+ },
+ "neighbours": [
+  {
+   "year": "2026",
+   "id": "nGBN7UjHcy",
+   "title": "Beyond Accuracy: Are Time Series Foundation Models Well-Calibrated?",
+   "keywords": "Time Series;Foundation Models;Calibration;Confidence",
+   "area": "foundation or frontier models, including LLMs",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    4.0,
+    6.0,
+    8.0
+   ],
+   "avg": 5.5,
+   "soundness": [
+    3.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    3.0,
+    3.0
+   ],
+   "sim": 0.18411314692189923,
+   "abstract": "The recent development of foundation models for time series data has generated considerable interest in using such models across a variety of applications. Although foundation  models achieve state-of-the-art predictive performance, their calibration properties remain relatively underexplored, despite the fact that calibration can be critical for many practical applications. In this paper, we investigate the calibration-related properties of five recent time series foundation models and two competitive baselines. We perform a series of systematic evaluations assessing model calibration (i.e., "
+  },
+  {
+   "year": "2026",
+   "id": "ASQ649zdHm",
+   "title": "Beyond Binary Rewards: Training LMs to Reason About Their Uncertainty",
+   "keywords": "RL;calibration;reasoning;uncertainty",
+   "area": "foundation or frontier models, including LLMs",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    4.0,
+    6.0,
+    6.0
+   ],
+   "avg": 5.0,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    3.0,
+    4.0
+   ],
+   "sim": 0.1703638687062968,
+   "abstract": "When language models (LMs) are trained via reinforcement learning (RL) to generate natural language \u201creasoning chains\u201d, their performance improves on a variety of difficult question answering tasks. Today, almost all successful applications of RL for reasoning use binary reward functions that evaluate the correctness of LM outputs. Because such reward functions do not penalize guessing or low-confidence outputs, they often have the unintended side-effect of degrading calibration and increasing the rate at which LMs generate incorrect responses (or \u201challucinate\u201d) in other problem domains. This "
+  },
+  {
+   "year": "2026",
+   "id": "H27kvyG4qf",
+   "title": "When Foundation Models are One-Liners: Limitations and Future Directions for Time Series Anomaly Detection",
+   "keywords": "Time Series;Foundation Model;Anomaly Detection",
+   "area": "foundation or frontier models, including LLMs",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    4.0,
+    6.0,
+    6.0
+   ],
+   "avg": 5.0,
+   "soundness": [
+    2.0,
+    2.0,
+    3.0,
+    4.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    2.0,
+    4.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    4.0,
+    5.0
+   ],
+   "sim": 0.16013867902605897,
+   "abstract": "Recent efforts have extended the foundation model paradigm from natural language to time series, raising expectations that pre-trained time-series foundation models generalize well across downstream tasks. In this work, we focus on time-series anomaly detection, in which time-series foundation models detect anomalies based on the reconstruction or forecasting error. Specifically, we critically examine the performance of five popular families of time-series foundation models: MOMENT, Chronos, TimesFM, Time-MoE, and TSPulse. We find that for each model family using varying model sizes and contex"
+  },
+  {
+   "year": "2026",
+   "id": "bYzGyEssk4",
+   "title": "Uncertainty Quantification for Regression Using Proper Scoring Rules",
+   "keywords": "uncertainty quantification;probabilistic methods;regression",
+   "area": "probabilistic methods (Bayesian methods, variational inference, sampling, UQ, etc.)",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    6.0
+   ],
+   "avg": 4.0,
+   "soundness": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    3.0,
+    4.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.15925832373046678,
+   "abstract": "Quantifying uncertainty of machine learning model predictions is essential for reliable decision-making, especially in safety-critical applications. Recently, uncertainty quantification (UQ) theory has advanced significantly, building on a firm basis of learning with proper scoring rules. However, these advances were focused on classification, while extending these ideas to regression remains challenging. In this work, we introduce a unified UQ framework for regression based on proper scoring rules, such as CRPS, logarithmic, squared error, and quadratic scores. We derive closed-form expressio"
+  },
+  {
+   "year": "2026",
+   "id": "OHaFgEa0yZ",
+   "title": "Uncalibrated Reasoning: GRPO Induces Overconfidence for Stochastic Outcomes",
+   "keywords": "GRPO;Reinforcement Learning;Calibration;Reasoning;Language Models;LLM;RLVR;PPO;RLOO;Perturb-seq",
+   "area": "reinforcement learning",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    2.0,
+    4.0,
+    4.0
+   ],
+   "avg": 3.0,
+   "soundness": [
+    2.0,
+    2.0,
+    3.0,
+    2.0
+   ],
+   "presentation": [
+    1.0,
+    1.0,
+    3.0,
+    2.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.1515553536146598,
+   "abstract": "Reinforcement learning (RL) has proven remarkably effective at improving the accuracy of language models in verifiable and deterministic domains like mathematics and coding. However, it is unclear if current RL methods are similarly effective at optimizing language models to reason about the probability of uncertain events from stochastic data, a valuable capability for decision-making and scientific discovery. Here, we demonstrate that Group Relative Policy Optimization (GRPO) induces highly overconfident probability predictions across three proper scoring rule rewards, while Proximal Policy "
+  },
+  {
+   "year": "2026",
+   "id": "Ea00wC36fn",
+   "title": "Bi-level Heterogeneous Learning for Time Series Foundation Models: A Federated Learning Approach",
+   "keywords": "Time Series Foundation Models;Time Series Forecasting;Federated Foundation Models",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    4.0,
+    4.0,
+    4.0,
+    6.0
+   ],
+   "avg": 4.5,
+   "soundness": [
+    3.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "presentation": [
+    4.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    5.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.1453499982102888,
+   "abstract": "Heterogeneity in time series data is more pronounced than in vision or language, as temporal dynamics vary substantially across domains and tasks. Existing efforts on training time series foundation models (TSFMs) from scratch are often trained with mixed-batch strategies that merge large-scale datasets, which can cause gradient conflicts and degrade representation quality. To address this, we propose a fine-grained learning method that distills invariant knowledge from heterogeneous series while reducing cross-domain interference. We characterize heterogeneity at two levels: inter-domain and "
+  },
+  {
+   "year": "2026",
+   "id": "WAaj0BnDP7",
+   "title": "MVG-CRPS: A Robust Loss Function for Multivariate Probabilistic Forecasting",
+   "keywords": "probabilistic forecasting;scoring rules;robust optimization",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    6.0
+   ],
+   "avg": 4.0,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    5.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.14170813786435288,
+   "abstract": "Multivariate probabilistic forecasting typically leverages neural network-based distributional regression, often employing Gaussian assumptions to simplify computation. While the standard negative log-likelihood provides analytical convenience, its sensitivity to outliers can severely degrade forecasting accuracy. Conversely, robust alternatives like the Energy Score, although less sensitive to extreme values, rely heavily on computationally expensive sampling approximations, limiting scalability in neural network training. To bridge this gap, we introduce the MVG-CRPS, a novel, strictly prope"
+  },
+  {
+   "year": "2026",
+   "id": "5jkzTzV5Ao",
+   "title": "Understanding the Implicit Biases of Design Choices for Time Series Foundation Models",
+   "keywords": "time series;foundation models;inductive bias;frequency;uncertainty;geometry",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    6.0,
+    6.0,
+    6.0
+   ],
+   "avg": 5.5,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    2.0,
+    2.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    3.0,
+    4.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.1382941756288452,
+   "abstract": "Time series foundation models (TSFMs) are a potential class of powerful, general-purpose tools for forecasting and related temporal tasks, but their behavior is strongly shaped by subtle inductive biases in their design. \nRather than developing a new model and claiming that it is better than existing TSFMs, e.g., by winning on existing benchmarks, our objective is to understand how the various \"knobs\" of the training process affect model quality. \nUsing a mix of theory and controlled empirical evaluation, we identify and show how various design choices (e.g., patch size, embedding choice, trai"
+  },
+  {
+   "year": "2026",
+   "id": "nP6dVUWZAE",
+   "title": "OATS: Online Data Augmentation for Time Series Foundation Models",
+   "keywords": "time series foundation model;data augmentation",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "avg": 4.0,
+   "soundness": [
+    3.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    2.0,
+    3.0,
+    1.0
+   ],
+   "contribution": [
+    3.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    3.0,
+    4.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.13754077867962075,
+   "abstract": "Time Series Foundation Models (TSFMs) are a powerful paradigm for time series analysis and are often enhanced by synthetic data augmentation to improve the training data quality. Existing augmentation methods, however, typically rely on heuristics and static paradigms. Motivated by dynamic data optimization, which shows that the contribution of samples varies across training stages, we propose OATS (Online Data Augmentation for Time Series Foundation Models), a principled strategy that generates synthetic data tailored to different training steps. OATS leverages valuable training samples as pr"
+  },
+  {
+   "year": "2026",
+   "id": "j7Aj3Yb9i1",
+   "title": "Bridging the High-Frequency Data Gap: A Millisecond-Resolution Dataset for Advancing Time Series Foundation Models",
+   "keywords": "High-frequency data;Time series foundation models;Short-term forecasting;Wireless networks",
+   "area": "datasets and benchmarks",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "avg": 3.5,
+   "soundness": [
+    2.0,
+    2.0,
+    1.0,
+    2.0
+   ],
+   "presentation": [
+    2.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    3.0,
+    1.0,
+    2.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "sim": 0.1363592021028188,
+   "abstract": "Time series foundation models (TSFMs) require diverse, real-world datasets to adapt across varying domains and temporal frequencies. However, current large-scale datasets predominantly focus on low-frequency time series with sampling intervals, i.e., time resolution, in the range of seconds to years, hindering their ability to capture the nuances of high-frequency time series data. To address this limitation, we introduce a novel dataset that captures millisecond-resolution wireless and traffic conditions from an operational 5G wireless deployment, expanding the scope of TSFMs to incorporate h"
+  },
+  {
+   "year": "2026",
+   "id": "EUAXc9Hlvm",
+   "title": "Context parroting: A simple but tough-to-beat baseline for foundation models in scientific machine learning",
+   "keywords": "time series;foundation models;dynamical systems;forecasting;chaos;physics;scientific machine learning",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    6.0,
+    8.0,
+    10.0
+   ],
+   "avg": 7.0,
+   "soundness": [
+    3.0,
+    3.0,
+    4.0,
+    4.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    4.0,
+    3.0
+   ],
+   "contribution": [
+    3.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    4.0,
+    5.0
+   ],
+   "sim": 0.1358250002517609,
+   "abstract": "Recent time-series foundation models exhibit strong abilities to predict physical systems. These abilities include zero-shot forecasting, in which a model forecasts future states of a system given only a short trajectory as context, without knowledge of the underlying physics. Here, we show that foundation models often forecast through a simple parroting strategy, and when they are not parroting they exhibit some shared failure modes such as converging to the mean. As a result, a naive context parroting model that copies directly from the context scores higher than leading time-series foundati"
+  },
+  {
+   "year": "2026",
+   "id": "1oGQCCmydB",
+   "title": "Conversational Time Series Foundation Models: Towards Explainable and Effective Forecasting",
+   "keywords": "Agentics; LLM; Time Series",
+   "area": "foundation or frontier models, including LLMs",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    6.0
+   ],
+   "avg": 4.0,
+   "soundness": [
+    2.0,
+    2.0,
+    3.0,
+    4.0
+   ],
+   "presentation": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    1.0,
+    2.0,
+    4.0,
+    3.0
+   ],
+   "confidence": [
+    3.0,
+    4.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.13521454679443695,
+   "abstract": "The proliferation of time series foundation models has created a landscape where no single method achieves consistent superiority, framing the central challenge not as finding the best model, but as orchestrating an optimal ensemble with interpliability.  While Large Language Models (LLMs) offer powerful reasoning capabilities, their direct application to time series forecasting has proven ineffective. We address this gap by repositioning the LLM as an intelligent judge that evaluates, explains, and strategically coordinates an ensemble of foundation models. To overcome the LLM's inherent lack"
+  },
+  {
+   "year": "2026",
+   "id": "xBW2FIfswU",
+   "title": "CauKer: Classification Time Series Foundation Models Can Be Pretrained on Synthetic Data",
+   "keywords": "Time Series Foundation Model;Time Series Classification",
+   "area": "learning on time series and dynamical systems",
+   "status": "Oral",
+   "accept": true,
+   "ratings": [
+    4.0,
+    6.0,
+    6.0,
+    8.0
+   ],
+   "avg": 6.0,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    3.0,
+    3.0,
+    4.0
+   ],
+   "confidence": [
+    4.0,
+    5.0,
+    4.0,
+    4.0
+   ],
+   "sim": 0.1337056056739169,
+   "abstract": "Time series foundation models (TSFMs) have recently gained significant attention due to their strong zero-shot capabilities and widespread real-world applications. Such models typically require a computationally costly pretraining on large-scale, carefully curated collections of real-world sequences. To allow for a sample-efficient pretraining of TSFMs, we propose CauKer, a novel algorithm designed to generate diverse, causally coherent synthetic time series with realistic trends, seasonality, and nonlinear interactions. CauKer combines Gaussian Process (GP) kernel composition with Structural "
+  },
+  {
+   "year": "2026",
+   "id": "HK6t5x5gJq",
+   "title": "FeDaL: Federated Dataset Learning for General Time Series Foundation Models",
+   "keywords": "Time Series Analysis;Time Series Foundation Models;Federated Learning",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    6.0
+   ],
+   "avg": 4.0,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    1.0,
+    3.0
+   ],
+   "contribution": [
+    1.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    3.0,
+    4.0
+   ],
+   "sim": 0.13227811585549984,
+   "abstract": "Dataset-level heterogeneity introduces significant domain biases that fundamentally degrade generalization on general Time Series Foundation Models (TSFMs), yet this challenge remains underexplored. This paper rethinks the from-scratch training of TSFMs using the paradigm of federated learning. We propose a novel Federated Dataset Learning (FeDaL) approach to tackle heterogeneous time series by learning dataset-agnostic temporal representations. Specifically, the distributed architecture of federated learning is a nature solution to decompose heterogeneous TS datasets into shared generalized k"
+  },
+  {
+   "year": "2026",
+   "id": "Y7IZlDttMM",
+   "title": "CoRA: Covariate-Aware Adaptation of Time Series Foundation Models",
+   "keywords": "Time Series Forecasting;Adaptation;Fine-tuning;Time Series Foundation Models",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    8.0
+   ],
+   "avg": 4.5,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    3.0,
+    2.0,
+    4.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    5.0,
+    4.0,
+    4.0
+   ],
+   "sim": 0.13018782750734142,
+   "abstract": "Time Series Foundation Models (TSFMs) have shown significant impact through their model capacity, scalability, and zero-shot generalization. However, due to the heterogeneity of inter-variate dependencies and the backbone scalability on large-scale multivariate datasets, most TSFMs are typically pre-trained on univariate time series. This limitation renders them oblivious to crucial information from diverse covariates in real-world forecasting tasks. To further enhance the performance of TSFMs, we propose a general covariate-aware adaptation (CoRA) framework for TSFMs. It leverages pre-trained"
+  },
+  {
+   "year": "2026",
+   "id": "axR2KZwaD3",
+   "title": "Understanding Transformers for Time Series: Rank Structure, Flow-of-ranks, and Compressibility",
+   "keywords": "time series;foundation models;rank structure;attention;embedding",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    6.0,
+    8.0,
+    8.0
+   ],
+   "avg": 6.5,
+   "soundness": [
+    3.0,
+    3.0,
+    3.0,
+    4.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    3.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    2.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "sim": 0.12823409217176912,
+   "abstract": "Transformers are widely used across data modalities, and yet the principles distilled from text models often transfer imperfectly. In this paper, we analyze Transformers through the lens of rank structure. Our focus is on the time series setting, where the structural properties of the data remarkably differ from those of text or vision. Time-series embeddings, unlike text or vision, exhibit sharply decaying singular spectra: small patch sizes and smooth continuous mappings concentrate the data into low-rank subspaces. From this, we prove that the associated $Q/K/V$ projections admit accurate l"
+  },
+  {
+   "year": "2026",
+   "id": "I8q4MZb4OP",
+   "title": "UniCA: Unified Covariate Adaptation for Time Series Foundation Model",
+   "keywords": "time series foundation model;adaptation;covariate-aware forecasting;heterogeneous covariates",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    6.0,
+    6.0,
+    6.0
+   ],
+   "avg": 5.5,
+   "soundness": [
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    3.0,
+    3.0,
+    2.0
+   ],
+   "confidence": [
+    5.0,
+    3.0,
+    5.0,
+    3.0
+   ],
+   "sim": 0.1265048961500577,
+   "abstract": "Time Series Foundation Models (TSFMs) have achieved remarkable success through large-scale pretraining. However, their design primarily targets real-valued series, limiting their ability to handle general forecasting tasks involving diverse and often \\emph{heterogeneous covariates}\u2014such as categorical variables and multimodal data (e.g., images, text)\u2014which are typically task-specific and difficult to leverage during pretraining. To address this gap, we propose Unified Covariate Adaptation (UniCA), a framework to bridge TSFMs with general covariate-aware forecasting. UniCA first performs covar"
+  },
+  {
+   "year": "2026",
+   "id": "P6HdPrHiQI",
+   "title": "Estimating Time Series Foundation Model Transferability via In-Context Learning",
+   "keywords": "Time series;transferability estimation;foundation model;forecasting",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    6.0
+   ],
+   "avg": 4.0,
+   "soundness": [
+    2.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    1.0,
+    2.0,
+    1.0,
+    4.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    4.0,
+    5.0
+   ],
+   "sim": 0.12445292784388742,
+   "abstract": "Time series foundation models (TSFMs) offer strong zero-shot forecasting via large-scale pre-training, yet fine-tuning remains critical for boosting performance in domains with limited public data. With the growing number of TSFMs, efficiently identifying the best model for downstream fine-tuning becomes increasingly challenging. In this work, we introduce TimeTic, a transferability estimation framework that recasts model selection as an in-context-learning problem: given observations on known (source) datasets, it predicts how a TSFM will perform after fine-tuning on a downstream (target) dat"
+  },
+  {
+   "year": "2026",
+   "id": "Iir0Y5yPZm",
+   "title": "Uncertainty Quantification for Regression: A Unified Framework based on Kernel Scores",
+   "keywords": "Uncertainty quantification;supervised regression;scoring rules",
+   "area": "probabilistic methods (Bayesian methods, variational inference, sampling, UQ, etc.)",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    2.0,
+    2.0,
+    6.0
+   ],
+   "avg": 3.0,
+   "soundness": [
+    2.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "sim": 0.1242443481389911,
+   "abstract": "Regression tasks, notably in safety-critical domains, require proper uncertainty quantification, yet the literature remains largely classification-focused. In this light, we introduce a family of measures for total, aleatoric, and epistemic uncertainty based on proper scoring rules, with a particular emphasis on kernel scores. The framework unifies several well-known measures and provides a principled recipe for designing new ones whose behavior, such as tail sensitivity, robustness, and out-of-distribution responsiveness, is governed by the choice of kernel. We prove explicit correspondences "
+  },
+  {
+   "year": "2026",
+   "id": "twpToSgMuO",
+   "title": "Are Time-Series Foundation Models Deployment-Ready? A Systematic Study of Adversarial Robustness Across Domains",
+   "keywords": "time series forecasting;adversarial robustness",
+   "area": "foundation or frontier models, including LLMs",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "avg": 3.5,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    1.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    4.0,
+    2.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   "confidence": [
+    5.0,
+    3.0,
+    5.0,
+    4.0
+   ],
+   "sim": 0.12384095689430073,
+   "abstract": "Time-Series Foundation Models (TSFMs) are rapidly transitioning from research prototypes to core components of critical decision-making systems, driven by their impressive zero-shot forecasting capabilities. However, as their deployment surges, a critical blind spot remains: their fragility under adversarial attacks. This lack of scrutiny poses severe risks, particularly as TSFMs enter high-stakes environments vulnerable to manipulation. We present a systematic, diagnostic study arguing that for TSFMs, robustness is not merely a secondary metric but a prerequisite for trustworthy deployment co"
+  },
+  {
+   "year": "2026",
+   "id": "JRlNrcTllN",
+   "title": "CoRA: Boosting Time Series Foundation Models for Multivariate Forecasting through Correlation-aware Adapter",
+   "keywords": "Time Series Forecasting",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    2.0,
+    6.0,
+    8.0,
+    8.0
+   ],
+   "avg": 6.0,
+   "soundness": [
+    2.0,
+    2.0,
+    4.0,
+    4.0
+   ],
+   "presentation": [
+    2.0,
+    2.0,
+    4.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    3.0,
+    4.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    5.0,
+    4.0
+   ],
+   "sim": 0.12379664644488067,
+   "abstract": "Most existing Time Series Foundation Models (TSFMs) use channel independent modeling and focus on capturing and generalizing temporal dependencies, while neglecting the correlations among channels or overlook the different aspects of correlations. However, these correlations play a vital role in Multivariate time series forecasting. To address this, we propose a Correlation-aware Adapter (**CoRA**), a lightweight plug-and-play method that requires only fine-tuning with TSFMs and is able to capture different types of correlations, so as to improve forecast performance. Specifically, to reduce c"
+  },
+  {
+   "year": "2025",
+   "id": "PTjKXwrVCT",
+   "title": "Forecasting Needles in a Time Series Haystack",
+   "keywords": "Time Series Forecasting;Zero-Shot Forecasting;Time Series Benchmark",
+   "area": "datasets and benchmarks",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    3.0,
+    3.0,
+    3.0,
+    6.0
+   ],
+   "avg": 3.75,
+   "soundness": [
+    3.0,
+    2.0,
+    3.0,
+    2.0
+   ],
+   "presentation": [
+    2.0,
+    2.0,
+    3.0,
+    2.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   "confidence": [
+    4.0,
+    5.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.12269110456337153,
+   "abstract": "Shocks and sudden spikes are common characteristics of real-world time series data. For example, demand surges or electricity outages often occur in time series data, manifesting as spikes (\u201cNeedles\u201d) added to the regular time series (\u201cHaystack\u201d). Despite their importance, it is surprising to find their absence in the benchmarking protocol at the frontier of time series research\u2014Time Series Foundation Models (TSFMs). To address this gap, we present the Needle-in-a-Time-Series-Haystack (NiTH) Benchmark, which includes both synthetic and real-world spiky time series data from diverse domains lik"
+  },
+  {
+   "year": "2026",
+   "id": "1ndthBqbyK",
+   "title": "TSDINO: Teacher\u2013Student Self-Distillation Framework for Robust Pre-training of Time-Series Foundation Models",
+   "keywords": "time series;self-distillation;time-series foundation models",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    2.0,
+    2.0,
+    4.0
+   ],
+   "avg": 2.5,
+   "soundness": [
+    3.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "presentation": [
+    1.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    1.0,
+    2.0,
+    2.0
+   ],
+   "confidence": [
+    5.0,
+    3.0,
+    4.0,
+    4.0
+   ],
+   "sim": 0.12218963460326492,
+   "abstract": "Building time-series foundation models (TSFM) poses challenges in terms of learning stability due to limited data availability and heterogeneous temporal dynamics across various time-series datasets. We propose TSDINO, a teacher-student framework for robust pre-training of TSFM based on the principle of self-distillation with no labels. TSDINO offers a model-agnostic approach that combines two complementary objectives: (i) feature preservation under augmentations and (ii) masked patch prediction. A meta-architecture comprising teacher-student networks and projection heads enables adaptation to"
+  },
+  {
+   "year": "2026",
+   "id": "OIgk0vzkwV",
+   "title": "PatchMoE: A Time Series Foundation Model with Hierarchical Patch-wise Mixture-of-Experts",
+   "keywords": "time series foundation model;forecasting;mixture of experts",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    2.0,
+    2.0,
+    6.0
+   ],
+   "avg": 3.0,
+   "soundness": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    3.0,
+    3.0
+   ],
+   "sim": 0.12194070909965701,
+   "abstract": "Recently, time series foundation models (TSFMs) pre-trained on massive datasets have achieved remarkable zero-shot performance. However, effectively modeling the diverse *inter*-series and *intra*-series patterns in large-scale datasets remains a significant challenge. Most existing methods, constrained by a single, fixed tokenizer, lack the flexibility to capture the pattern diversity. To tackle this issue, we introduce PatchMoE, a novel hierarchical Mixture of Experts (MoE) architecture, comprising Patch-wise Experts and Sample-wise Hierarchical Router as key components. Specifically, Patch-"
+  },
+  {
+   "year": "2026",
+   "id": "LygvJQPPJ2",
+   "title": "Learning to Reason About Code Insecurity: Composite-Reinforcement Fine-Tuning for Cognitive Alignment",
+   "keywords": "Cognitive Alignment;Reinforcement Learning",
+   "area": "transfer learning, meta learning, and lifelong learning",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    2.0,
+    4.0
+   ],
+   "avg": 2.6666666666666665,
+   "soundness": [
+    1.0,
+    2.0,
+    3.0
+   ],
+   "presentation": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "contribution": [
+    1.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    5.0,
+    2.0
+   ],
+   "sim": 0.12182406131512286,
+   "abstract": "Automated vulnerability analysis increasingly relies on language models, yet even strong LLMs exhibit unstable security reasoning: they either over-flag benign code or miss critical flaws, particularly under cross-language shifts. We present ARGO--Composite-Reinforcement Fine-Tuning for Cognitive Alignment--a label-efficient training framework that explicitly optimizes a composite reward combining (i) label-based decision scoring via a strictly proper scoring rule on predicted probabilities, (ii) explanation grounding and consistency through structure- and code-referencing heuristics that do n"
+  },
+  {
+   "year": "2026",
+   "id": "8eYOBBgP05",
+   "title": "Kairos: Towards Adaptive and Generalizable Time Series Foundation Models",
+   "keywords": "Time series modeling;Time series forecasting;Time series foundation model",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "avg": 3.5,
+   "soundness": [
+    3.0,
+    3.0,
+    2.0,
+    2.0
+   ],
+   "presentation": [
+    2.0,
+    3.0,
+    2.0,
+    2.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    4.0,
+    4.0
+   ],
+   "sim": 0.12020005442702236,
+   "abstract": "Time series foundation models (TSFMs) have emerged as a powerful paradigm for time series analysis, driven by large-scale pretraining on diverse data corpora. However, time series inherently exhibit heterogeneous information density over time, influenced by system states and signal complexity, presenting significant modeling challenges especially in a zero-shot scenario. Current TSFMs rely on non-adaptive processing pipelines that fail to capture this dynamic nature. For example, common tokenization strategies such as fixed-size patching enforce rigid observational granularity, limiting their "
+  },
+  {
+   "year": "2026",
+   "id": "RPowYXiRmW",
+   "title": "End-to-End Probabilistic Framework for Learning with Hard Constraints",
+   "keywords": "scientific machine learning;conservation laws;physically constrained machine learning;partial differential equations;time series forecasting;uncertainty quantification",
+   "area": "applications to physical sciences (physics, chemistry, biology, etc.)",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    6.0,
+    6.0,
+    6.0,
+    8.0
+   ],
+   "avg": 6.5,
+   "soundness": [
+    3.0,
+    3.0,
+    3.0,
+    4.0
+   ],
+   "presentation": [
+    4.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "contribution": [
+    3.0,
+    3.0,
+    3.0,
+    4.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    3.0,
+    3.0
+   ],
+   "sim": 0.11946003597829853,
+   "abstract": "We present ProbHardE2E, a probabilistic forecasting framework that incorporates hard operational/physical constraints and provides uncertainty quantification. Our methodology uses a novel differentiable probabilistic projection layer (DPPL) that can be combined with a wide range of neural network architectures. DPPL allows the model to learn the system in an end-to-end manner, compared to other approaches where constraints are satisfied either through a post-processing step or at inference. ProbHardE2E optimizes a strictly proper scoring rule, without making any distributional assumptions on t"
+  },
+  {
+   "year": "2026",
+   "id": "syfWdclGE1",
+   "title": "The Forecast After the Forecast: A Post-Processing Shift in Time Series",
+   "keywords": "Time Series Forecasting;Post-Processing;Fine-Tuning",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    6.0,
+    6.0,
+    8.0
+   ],
+   "avg": 6.0,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    4.0,
+    4.0
+   ],
+   "sim": 0.1177264805423778,
+   "abstract": "Time series forecasting has long been dominated by advances in model architecture, with recent progress driven by deep learning and hybrid statistical techniques. However, as forecasting models approach diminishing returns in accuracy, a critical yet underexplored opportunity emerges: the strategic use of post-processing. In this paper, we address the last-mile gap in time-series forecasting, which is to improve accuracy and uncertainty without retraining or modifying a deployed backbone. We propose $\\delta$-Adapter, a lightweight, architecture-agnostic way to boost deployed time series foreca"
+  },
+  {
+   "year": "2026",
+   "id": "7uFbs68MSI",
+   "title": "Adaptive Conformal Anomaly Detection with Time Series Foundation Models for Signal Monitoring.",
+   "keywords": "time series anomaly detection; conformal prediction; anomaly detection; monitoring sequential signals",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    6.0,
+    6.0
+   ],
+   "avg": 5.333333333333333,
+   "soundness": [
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    2.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    3.0
+   ],
+   "sim": 0.11749229808007229,
+   "abstract": "We propose a post-hoc adaptive conformal anomaly detection method for monitoring time series that leverages predictions from pre-trained foundation models without requiring additional fine-tuning. Our method yields an interpretable anomaly score directly interpretable as a false alarm rate (p-value), facilitating transparent and actionable decision-making. It employs weighted quantile conformal prediction bounds and adaptively learns optimal weighting parameters from past predictions, enabling calibration under distribution shifts and stable false alarm control, while preserving out-of-sample "
+  },
+  {
+   "year": "2026",
+   "id": "iqUMjxfDNH",
+   "title": "Test-Time Efficient Pretrained Model Portfolios for Time Series Forecasting",
+   "keywords": "pretrained time series models;time series forecasting;foundation model combination",
+   "area": "learning on time series and dynamical systems",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    2.0,
+    4.0,
+    6.0,
+    8.0
+   ],
+   "avg": 5.0,
+   "soundness": [
+    3.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    2.0,
+    4.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    3.0,
+    4.0
+   ],
+   "sim": 0.1162433557523494,
+   "abstract": "Is bigger always better for time series foundation models? With the question in mind, we explore an alternative to training a single, large monolithic model: building a portfolio of smaller, pretrained forecasting models. By applying ensembling or model selection over these portfolios, we achieve competitive performance on large-scale benchmarks using much fewer parameters. We explore strategies for designing such portfolios and find that collections of specialist models consistently outperform portfolios of independently trained generalists. Remarkably, we demonstrate that post-training a bas"
+  },
+  {
+   "year": "2026",
+   "id": "uTK1SNgi1N",
+   "title": "Adapt Data to Model: Adaptive Transformation Optimization for Domain-shared Time Series Foundation Models",
+   "keywords": "time series foundation models;transformation;adaptation",
+   "area": "other topics in machine learning (i.e., none of the above)",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    2.0,
+    4.0,
+    6.0,
+    6.0
+   ],
+   "avg": 4.5,
+   "soundness": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    3.0,
+    2.0,
+    4.0
+   ],
+   "contribution": [
+    2.0,
+    3.0,
+    3.0,
+    2.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "sim": 0.11577383286294797,
+   "abstract": "Large time series models (LTMs) have recently demonstrated powerful capabilities for universal forecasting. However, these models still struggle to address the variety and nonstationarity of time series, resulting in an unsatisfying balance between forecasting performance and generalizability. Instead of breeding unceasingly new models for diverse domains, this paper proposes a novel framework, time-series adaptive transformation optimization (TATO),  that enables a frozen pre-trained LTM to fit various downstream domains through an empirically optimal time-series transformation pipeline. Thre"
+  },
+  {
+   "year": "2026",
+   "id": "lPQOPD1tcm",
+   "title": "Calibration Is Grouping: VR-SAG with Intra-Group Variance Control and Logit-Cluster Evaluation",
+   "keywords": "recommender systems;calibration",
+   "area": "other topics in machine learning (i.e., none of the above)",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    6.0,
+    6.0
+   ],
+   "avg": 4.5,
+   "soundness": [
+    3.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    2.0,
+    3.0,
+    2.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    3.0,
+    4.0
+   ],
+   "sim": 0.1137551236838995,
+   "abstract": "Accurate click-through and conversion-rate estimates are pivotal for bid optimization in large-scale advertising, yet modern deep CTR/CVR models are often miscalibrated. Classical global calibrators (Platt scaling, isotonic regression) and feature-based binning struggle to capture latent user\u2013item heterogeneity. We approach calibration through the lens of latent, calibration-aware groupings and propose Variance-Reduced Semantic-Aware Grouping (VR-SAG)}\u2014a lightweight post-hoc layer over a frozen backbone that (i) forms semantically coherent partitions in embedding space, (ii) fits per-group tem"
+  },
+  {
+   "year": "2025",
+   "id": "uCqxDfLYrB",
+   "title": "Towards Neural Scaling Laws for Time Series Foundation Models",
+   "keywords": "Time series;scaling law;foundation model;transformer;forecasting",
+   "area": "foundation or frontier models, including LLMs",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    5.0,
+    6.0,
+    6.0,
+    8.0
+   ],
+   "avg": 6.25,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    4.0,
+    3.0,
+    3.0,
+    4.0
+   ],
+   "contribution": [
+    3.0,
+    4.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    5.0,
+    3.0,
+    4.0
+   ],
+   "sim": 0.11344772902657352,
+   "abstract": "Scaling laws offer valuable insights into the design of time series foundation models (TSFMs). However, previous research has largely focused on the scaling laws of TSFMs for in-distribution (ID) data, leaving their out-of-distribution (OOD) scaling behavior and the influence of model architectures less explored. In this work, we examine two common TSFM architectures\u2014encoder-only and decoder-only Transformers\u2014and investigate their scaling behavior on both ID and OOD data. These models are trained and evaluated across varying parameter counts, compute budgets, and dataset sizes. Our experiments"
+  },
+  {
+   "year": "2026",
+   "id": "3rZdp4TmUb",
+   "title": "TreeGRPO: Tree-Advantage GRPO for Online RL Post-Training of Diffusion Models",
+   "keywords": "Generative Models;Flow Matching;Reinforcement Learning;GRPO;Tree Search",
+   "area": "generative models",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    4.0,
+    4.0,
+    6.0,
+    6.0
+   ],
+   "avg": 5.0,
+   "soundness": [
+    2.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    2.0,
+    2.0
+   ],
+   "contribution": [
+    3.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    3.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "sim": 0.11314814235919574,
+   "abstract": "Reinforcement learning (RL) post-training is crucial for aligning generative models with human preferences, but its prohibitive computational cost remains a major barrier to widespread adoption. We introduce \\textbf{TreeGRPO}, a novel RL framework that dramatically improves training efficiency by recasting the denoising process as a search tree. From shared initial noise samples, TreeGRPO strategically branches to generate multiple candidate trajectories while efficiently reusing their common prefixes. This tree-structured approach delivers three key advantages: (1) \\emph{High sample efficienc"
+  },
+  {
+   "year": "2026",
+   "id": "qWAcXNTptu",
+   "title": "Beyond Binary Evaluation: Measuring Language Model Hallucinations Through Distributional Correctness",
+   "keywords": "LLMs;evaluation;metrics;hallucination",
+   "area": "datasets and benchmarks",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    4.0,
+    4.0,
+    8.0
+   ],
+   "avg": 4.5,
+   "soundness": [
+    2.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "presentation": [
+    3.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    3.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    3.0,
+    2.0,
+    4.0
+   ],
+   "sim": 0.11035691982598911,
+   "abstract": "Common evaluation paradigms for language models focus on scoring single responses through accuracy metrics or proper scoring rules, failing to capture the full richness of a model's belief state. Recent work illustrates that language models hallucinate in-part because they are optimised to be good test-takers under binary scoring schemes that reward any answer over abstention. While this insight naturally leads to penalty-based approaches, they ignore crucial distinctions in how models distribute uncertainty, for example between hedging toward incorrect answers versus hedging toward ``I don't "
+  },
+  {
+   "year": "2026",
+   "id": "Hw5yTnlvre",
+   "title": "The Language of Time: a Language Model Perspective on Time Series Foundation Models",
+   "keywords": "Time Series Foundation Models;Patch-based Representation Learning;Distributional Motif Tokens",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    4.0,
+    6.0,
+    6.0,
+    6.0
+   ],
+   "avg": 5.5,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0,
+    2.0
+   ],
+   "presentation": [
+    2.0,
+    4.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    3.0,
+    4.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    2.0,
+    4.0
+   ],
+   "sim": 0.11035223188348008,
+   "abstract": "Large language models have established a successful paradigm of training foundation models on massive datasets, extending this approach to multiple domains. Time series foundation models extend this paradigm, demonstrating exceptional cross-domain transfer and prediction capabilities in both industrial and academic scenarios. This creates a paradox: while time series from different domains reflect distinct dynamical systems that should limit transferability, empirical results demonstrate remarkable cross-domain performance.\nTo resolve this paradox, this paper investigates the representation le"
+  },
+  {
+   "year": "2026",
+   "id": "OfgyKeQdBg",
+   "title": "CoDaPO: Confidence and Difficulty-Adaptive Policy Optimization for Language Models",
+   "keywords": "Large languge models;Post-training",
+   "area": "foundation or frontier models, including LLMs",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    2.0,
+    2.0,
+    4.0,
+    6.0,
+    8.0
+   ],
+   "avg": 4.4,
+   "soundness": [
+    1.0,
+    3.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    1.0,
+    4.0,
+    3.0,
+    2.0,
+    4.0
+   ],
+   "contribution": [
+    2.0,
+    1.0,
+    2.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    4.0,
+    4.0,
+    4.0,
+    4.0,
+    2.0
+   ],
+   "sim": 0.10901611179193271,
+   "abstract": "Reinforcement learning (RL) post-training strengthens reasoning in large language models (LLMs), yet the prevailing GRPO algorithm exhibits persistent issues. Using a PRAG lens (Probability, Reward, Advantage, Gradient), we diagnose three mechanisms: (i) _probability inflation_\u2014clipping induces one-way confidence drift with weak KL correction, collapsing entropy; (ii) _advantage contraction_\u2014group normalization dulls update signals as accuracy rises; and (iii) _hierarchical convergence_\u2014easy questions improve quickly while hard ones advance slowly via rare discoveries. We then introduce _CoDaP"
+  },
+  {
+   "year": "2025",
+   "id": "IRL9wUiwab",
+   "title": "Exploring Representations and Interventions in Time Series Foundation Models",
+   "keywords": "Time Series Foundation Models;Model Steering;Interpretability;Pruning",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    6.0,
+    6.0,
+    6.0
+   ],
+   "avg": 6.0,
+   "soundness": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    2.0,
+    2.0
+   ],
+   "contribution": [
+    3.0,
+    3.0,
+    3.0
+   ],
+   "confidence": [
+    3.0,
+    4.0,
+    3.0
+   ],
+   "sim": 0.10781476791605904,
+   "abstract": "Time series foundation models promise to be powerful tools for a wide range of applications. However, their internal representations and learned concepts are still not well understood. In this study, we investigate the structure and redundancy of representations across various TSFMs, examining the self-similarity of model layers within and across different model sizes. This analysis reveals block-like redundancy in the representations, which can be utilized for informed pruning to improve inference speed and efficiency. Additionally, we explore the concepts learned by these models\u2014such as peri"
+  },
+  {
+   "year": "2025",
+   "id": "X0epAjg0hd",
+   "title": "Reassessing How to Compare and Improve the Calibration of Machine Learning Models",
+   "keywords": "calibration;proper scoring rules;ECE;kernel regression",
+   "area": "probabilistic methods (Bayesian methods, variational inference, sampling, UQ, etc.)",
+   "status": "Poster",
+   "accept": true,
+   "ratings": [
+    5.0,
+    6.0,
+    6.0
+   ],
+   "avg": 5.666666666666667,
+   "soundness": [
+    3.0,
+    3.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    3.0,
+    2.0
+   ],
+   "contribution": [
+    2.0,
+    2.0,
+    3.0
+   ],
+   "confidence": [
+    3.0,
+    2.0,
+    3.0
+   ],
+   "sim": 0.10750176891165884,
+   "abstract": "A machine learning model is calibrated if its predicted probability for an outcome matches the observed frequency for that outcome conditional on the model prediction. This property has become increasingly important as the impact of machine learning models has continued to spread to various domains. As a result, there are now a dizzying number of recent papers on measuring and improving the calibration of (specifically deep learning) models. In this work, we reassess the reporting of calibration metrics in the recent literature. We show that there exist trivial recalibration approaches that ca"
+  },
+  {
+   "year": "2025",
+   "id": "xVU6rY37X9",
+   "title": "Partial Channel Dependence with Channel Masks for Time Series Foundation Models",
+   "keywords": "Time Series;Foundation Model;Channel Dependence;Transformer",
+   "area": "learning on time series and dynamical systems",
+   "status": "Reject",
+   "accept": false,
+   "ratings": [
+    3.0,
+    3.0,
+    5.0,
+    6.0,
+    6.0
+   ],
+   "avg": 4.6,
+   "soundness": [
+    1.0,
+    1.0,
+    2.0,
+    2.0,
+    3.0
+   ],
+   "presentation": [
+    2.0,
+    2.0,
+    3.0,
+    3.0,
+    3.0
+   ],
+   "contribution": [
+    2.0,
+    1.0,
+    2.0,
+    3.0,
+    2.0
+   ],
+   "confidence": [
+    3.0,
+    5.0,
+    4.0,
+    3.0,
+    4.0
+   ],
+   "sim": 0.10707274250294786,
+   "abstract": "Recent advancements in foundation models have been successfully extended to the time series (TS) domain, facilitated by the emergence of large-scale TS datasets. However, previous efforts have primarily focused on designing model architectures to address explicit heterogeneity among datasets such as various numbers of channels, while often overlooking implicit heterogeneity such as varying dependencies between channels. In this work, we introduce the concept of partial channel dependence (PCD) for models capturing channel dependencies (CDs) via attention, which enables a more sophisticated adj"
+  }
+ ],
+ "overall_2026": {
+  "n": 13257,
+  "accept_rate": 0.4009202685373765,
+  "mean_rating_accept": 5.407946064597052,
+  "mean_rating_reject": 4.052728112146395
+ }
+}

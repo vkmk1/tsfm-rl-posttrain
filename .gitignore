@@ -13,3 +13,5 @@ paper/*.log
 paper/*.out
 paper/*.pdf
 paper/*.synctex.gz
+
+# review radar corpus cache lives in ~/.cache/tsfm_radar (not in git)

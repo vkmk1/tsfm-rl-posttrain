@@ -1,0 +1,141 @@
+<title>Review Radar</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{color-scheme:light;
+--bg:#f6f4ef;--surface:#fffdf8;--surface-2:#ece8df;--ink:#1d1f22;--ink-2:#4b4f56;--muted:#7c8087;--line:#d9d4c8;--line-2:#bdb6a6;
+--acc:#2A78D6;--rej:#D2691E;--ours:#178F7A;--acc-soft:#dbe9fa;--rej-soft:#f9e3d3;--ours-soft:#d5efe9;
+--display:"Newsreader",Georgia,serif;--sans:"Public Sans","Segoe UI",Helvetica,Arial,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+--bg:#15171a;--surface:#1d2024;--surface-2:#282c31;--ink:#ecebe6;--ink-2:#b8b9b4;--muted:#8b8e90;--line:#31363c;--line-2:#454b52;
+--acc:#3F80CF;--rej:#CC7030;--ours:#1F9A85;--acc-soft:#1c2f48;--rej-soft:#402716;--ours-soft:#15342e}}
+:root[data-theme="dark"]{color-scheme:dark;
+--bg:#15171a;--surface:#1d2024;--surface-2:#282c31;--ink:#ecebe6;--ink-2:#b8b9b4;--muted:#8b8e90;--line:#31363c;--line-2:#454b52;
+--acc:#3F80CF;--rej:#CC7030;--ours:#1F9A85;--acc-soft:#1c2f48;--rej-soft:#402716;--ours-soft:#15342e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+header{background:var(--surface);border-bottom:1px solid var(--line)}.hin{max-width:1180px;margin:0 auto;padding:22px 28px 16px}
+.eyebrow{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-family:var(--display);font-weight:500;font-size:34px;margin:4px 0 6px;letter-spacing:-.01em;text-wrap:balance}
+.lede{color:var(--ink-2);max-width:80ch;margin:0}
+main{max-width:1180px;margin:0 auto;padding:22px 28px 60px;display:grid;gap:22px}
+section{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:22px 26px}
+h2{font-family:var(--display);font-weight:500;font-size:23px;margin:0 0 6px;text-wrap:balance}
+h3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);margin:18px 0 8px;font-weight:600}
+p,li{max-width:76ch}.sub{color:var(--ink-2);margin:0 0 10px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.tile{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.tile .n{font-family:var(--mono);font-size:24px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.1}.tile .l{font-size:12px;color:var(--ink-2);margin-top:4px}
+@media (max-width:900px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media (max-width:900px){.two{grid-template-columns:1fr}}
+figure{margin:12px 0 4px;padding:12px 14px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);position:relative}
+figure svg{max-width:100%;height:auto;display:block;color:var(--ink);font-family:var(--sans)}
+figcaption{font-size:12.5px;color:var(--ink-2);margin-top:8px;max-width:100ch}
+.legend{display:flex;gap:16px;font-size:12.5px;color:var(--ink-2);margin:4px 0 2px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line-2);cursor:pointer;white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.chip.acc{background:var(--acc-soft);color:var(--ink)}.chip.rej{background:var(--rej-soft);color:var(--ink)}
+.claim{font-family:var(--display);font-size:18.5px;line-height:1.45;padding:12px 16px;border:1px solid var(--line-2);border-radius:6px;background:var(--bg);max-width:92ch}
+.callout{border-left:3px solid var(--ours);background:var(--ours-soft);padding:8px 14px;border-radius:0 6px 6px 0;margin:12px 0;max-width:90ch}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0 6px;font-size:13px}
+.controls input,.controls select{font:inherit;padding:5px 8px;border:1px solid var(--line-2);border-radius:5px;background:var(--surface);color:var(--ink)}
+.controls button{font:inherit;padding:5px 10px;border:1px solid var(--line-2);border-radius:5px;background:var(--surface-2);color:var(--ink);cursor:pointer}
+.controls button:focus-visible,th:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 8px;border-radius:4px;white-space:nowrap;transform:translate(-50%,-120%);opacity:0;transition:opacity .08s}
+details{margin:6px 0}summary{cursor:pointer;font-size:13px;color:var(--ink-2)}
+.abs{font-size:12.5px;color:var(--ink-2);max-width:100ch;margin:4px 0 0}
+.gap{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}.gap:first-of-type{border-top:0}.gap .k{font-family:var(--mono);font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.tip{transition:none}}
+</style>
+
+<header><div class="hin">
+<div class="eyebrow">ICLR score corpus · Paper Copilot mirror of OpenReview · rebuilt by scripts/review_radar.py</div>
+<h1>Review Radar</h1>
+<p class="lede" id="lede"></p>
+<div class="tiles" id="tiles"></div>
+</div></header>
+
+<main>
+<section>
+<h2>Where the text alone would land</h2>
+<p class="sub">Three priors computed from the abstract before any reviewer sees the evidence. They say what the topic and framing buy on their own; the GPU results are what move a paper off these numbers.</p>
+<div class="two">
+<figure id="fig-curve"><div class="legend"><span style="--c:var(--acc)">all ICLR 2026 decided papers</span><span style="--c:var(--rej)">our primary area</span><span style="--c:var(--ours)">our prior (kNN and ridge)</span></div><div id="curve"></div><figcaption>Empirical acceptance probability by mean reviewer rating (bins of ±0.25 with at least 20 papers). Hover a point for the count. The two vertical marks are the ratings the priors assign to our abstract.</figcaption></figure>
+<figure id="fig-dist"><div class="legend"><span style="--c:var(--acc)">accepted neighbours</span><span style="--c:var(--rej)">rejected neighbours</span><span style="--c:var(--ours)">our prior</span></div><div id="dist"></div><figcaption>Mean ratings of the most similar papers, by decision. The density of accepted neighbours above 5.0 is the target zone.</figcaption></figure>
+</div>
+<div class="claim" id="claim"></div>
+</section>
+
+<section>
+<h2>The shape a paper needs</h2>
+<p class="sub">Sub-scores of accepted versus rejected neighbours, averaged over their reviewers. The gap is where effort pays.</p>
+<figure id="fig-prof"><div class="legend"><span style="--c:var(--acc)">accepted neighbours</span><span style="--c:var(--rej)">rejected neighbours</span></div><div id="prof"></div><figcaption>Soundness, presentation and contribution on the 1–4 reviewer scale. Contribution is the axis reviewers use to reject topic-adjacent work; presentation 2s appear even among accepted papers.</figcaption></figure>
+<h3>What we need to do, from the comparables' reviews</h3>
+<div class="gap"><div class="k">G1</div><div><b>Scale and leaderboards.</b> Every accepted comparable had many datasets and several model families; the rejected ones were thin. Full GIFT-Eval and fev-bench through the official harnesses, four oracle families including a current state-of-the-art one, a compute table.</div></div>
+<div class="gap"><div class="k">G2</div><div><b>The baselines reviewers asked the comparables for.</b> Best fixed context, TATO-style transformation search, test-time adaptation (COSA, TAFAS), a conformally recalibrated oracle, SFT of the oracle at matched compute. ZooCast was rejected because its combination lost to the best single model; our regret claim has to be shown, not proved.</div></div>
+<div class="gap"><div class="k">G3</div><div><b>Reproduce before you refute.</b> Run each audited recipe from its released code, replicate its reported point gains, then show the coverage cost with intervals. Otherwise "straw man".</div></div>
+<div class="gap"><div class="k">G4</div><div><b>Cross-oracle transfer as a headline.</b> No comparable has it; it is the one novelty lever that is ours alone.</div></div>
+<div class="gap"><div class="k">G5</div><div><b>Presentation.</b> Four of five accepted comparables took a presentation score of 2 from someone; a rating-2 review led with "deficient writing". One figure per claim, tables that fit, no red TODOs.</div></div>
+<div class="gap"><div class="k">G6</div><div><b>Answer "why RL at all" in the paper.</b> Either a policy-gradient variant beats exact online learning on the discrete decision, or the audit carries the RL claim and the title says so.</div></div>
+</section>
+
+<section>
+<h2>Nearest neighbours in the corpus</h2>
+<p class="sub">Similarity is TF-IDF cosine over title, abstract and keywords. Click a column header to sort; filter by decision or area; expand a row for its abstract and the OpenReview link.</p>
+<div class="controls"><input id="q" placeholder="filter by words in title…" size="28"><select id="dec"><option value="">all decisions</option><option value="acc">accepted</option><option value="rej">rejected</option></select><select id="yr"><option value="">both years</option><option value="2026">2026</option><option value="2025">2025</option></select><button id="reset">reset</button><span id="count" style="color:var(--muted)"></span></div>
+<div class="tw"><table id="tbl"><thead><tr><th data-k="sim" class="n" tabindex="0">sim</th><th data-k="year" tabindex="0">year</th><th data-k="title" tabindex="0">title</th><th data-k="status" tabindex="0">decision</th><th data-k="avg" class="n" tabindex="0">mean</th><th data-k="ratings" tabindex="0">ratings</th><th data-k="sound" class="n" tabindex="0">sound.</th><th data-k="pres" class="n" tabindex="0">pres.</th><th data-k="contrib" class="n" tabindex="0">contrib.</th><th data-k="area" tabindex="0">area</th></tr></thead><tbody></tbody></table></div>
+<div class="callout">To refresh: <code>python3 scripts/review_radar.py --refresh</code> re-downloads the score lists, recomputes neighbours and priors from the current abstract in <code>paper/main.tex</code>, and rewrites this page. Neighbours change when the abstract changes; the curves change when a new ICLR cycle is mirrored.</div>
+</section>
+</main>
+
+<script>
+/*__DATA__*/
+(function(){
+const fmt=(x,d=2)=>x==null?"—":Number(x).toFixed(d);
+const P=DATA.predictions, O=DATA.overall_2026, A=DATA.area_stats;
+document.getElementById('lede').textContent=`"${DATA.title}" against ${DATA.n_corpus.toLocaleString()} decided ICLR 2025–2026 submissions. Primary area: ${DATA.area}.`;
+const tiles=[[fmt(P.knn_rating,2),"kNN prior on mean rating (similarity-weighted over neighbours)"],[fmt(P.ridge_rating,2),`ridge prior on mean rating (text only; CV MAE ${fmt(P.ridge_cv_mae,2)})`],[Math.round(100*P.knn_accept)+"%",`neighbours' acceptance rate, similarity-weighted`],[Math.round(100*P.text_logit_accept)+"%",`text-only acceptance model (CV AUC ${fmt(P.text_logit_cv_auc,2)})`],[Math.round(100*O.accept_rate)+"%",`ICLR 2026 acceptance among ${O.n.toLocaleString()} decided papers`],[A.accept_rate==null?"—":Math.round(100*A.accept_rate)+"%",`acceptance in our primary area (${A.n} decided)`],[fmt(O.mean_rating_accept,2),"mean rating of accepted papers"],[fmt(O.mean_rating_reject,2),"mean rating of rejected papers"]];
+document.getElementById('tiles').innerHTML=tiles.map(t=>`<div class="tile"><div class="n">${t[0]}</div><div class="l">${t[1]}</div></div>`).join('');
+// interpolate P(accept) at a rating
+function pAt(curve,r){if(!curve.length)return null;const s=[...curve].sort((a,b)=>a.avg-b.avg);if(r<=s[0].avg)return s[0].p;if(r>=s[s.length-1].avg)return s[s.length-1].p;for(let i=1;i<s.length;i++){if(r<=s[i].avg){const a=s[i-1],b=s[i];return a.p+(b.p-a.p)*(r-a.avg)/(b.avg-a.avg)}}return null}
+const pk=pAt(DATA.curve_all_2026,P.knn_rating), pr=pAt(DATA.curve_all_2026,P.ridge_rating), pa=pAt(DATA.curve_area_2026,P.knn_rating);
+document.getElementById('claim').textContent=`Read: the abstract's topic and framing alone place it near ${fmt(P.knn_rating,1)} (kNN) to ${fmt(P.ridge_rating,1)} (ridge) on the 10-point scale, where ICLR 2026 accepted ${Math.round(100*(pk||0))}–${Math.round(100*(pr||0))}% of papers overall${pa!=null?` and ${Math.round(100*pa)}% in our area`:''}. Accepted papers average ${fmt(O.mean_rating_accept,2)}. Everything above that line has to come from evidence the abstract cannot carry: scale, baselines, intervals, transfer.`;
+// ---- curve chart
+function curveChart(){const W=520,H=260,L=44,R=12,T=14,B=36;const xs=r=>L+(r-2)/(8-2)*(W-L-R), ys=p=>T+(1-p)*(H-T-B);
+let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="acceptance probability by mean rating"><g font-size="11" fill="currentColor">`;
+for(const p of [0,.25,.5,.75,1]){g+=`<line x1="${L}" x2="${W-R}" y1="${ys(p)}" y2="${ys(p)}" stroke="var(--line)" stroke-dasharray="2 3"/><text x="${L-6}" y="${ys(p)+4}" text-anchor="end">${Math.round(p*100)}%</text>`}
+for(const r of [2,3,4,5,6,7,8]){g+=`<text x="${xs(r)}" y="${H-B+16}" text-anchor="middle">${r}</text>`}
+g+=`<text x="${(L+W-R)/2}" y="${H-4}" text-anchor="middle" fill="var(--ink-2)">mean reviewer rating</text>`;
+const line=(c,col)=>{const s=[...c].sort((a,b)=>a.avg-b.avg);if(!s.length)return'';let d=s.map((p,i)=>(i?'L':'M')+xs(p.avg)+','+ys(p.p)).join(' ');let out=`<path d="${d}" fill="none" stroke="${col}" stroke-width="2"/>`;for(const p of s){out+=`<circle cx="${xs(p.avg)}" cy="${ys(p.p)}" r="4" fill="${col}" stroke="var(--surface)" stroke-width="2" data-tip="rating ${p.avg}: ${Math.round(p.p*100)}% accepted (n=${p.n})"/>`}return out};
+g+=line(DATA.curve_all_2026,'var(--acc)')+line(DATA.curve_area_2026,'var(--rej)');
+for(const [r,lab] of [[P.knn_rating,'kNN'],[P.ridge_rating,'ridge']]){g+=`<line x1="${xs(r)}" x2="${xs(r)}" y1="${T}" y2="${H-B}" stroke="var(--ours)" stroke-width="2" stroke-dasharray="5 4"/><text x="${xs(r)+4}" y="${T+12}" fill="var(--ours)" font-weight="600">${lab} ${fmt(r,1)}</text>`}
+g+='</g></svg>';document.getElementById('curve').innerHTML=g}
+// ---- distribution of neighbours
+function distChart(){const N=DATA.neighbours;const W=520,H=260,L=36,R=12,T=14,B=36;const bins={};for(const n of N){const b=Math.round(n.avg*2)/2;bins[b]=bins[b]||{acc:0,rej:0};bins[b][n.accept?'acc':'rej']++}
+const keys=Object.keys(bins).map(Number).sort((a,b)=>a-b);const mx=Math.max(1,...keys.map(k=>bins[k].acc+bins[k].rej));const xs=r=>L+(r-2)/(8-2)*(W-L-R), ys=v=>T+(1-v/mx)*(H-T-B);const bw=(W-L-R)/12-3;
+let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="mean ratings of nearest neighbours by decision"><g font-size="11" fill="currentColor">`;
+for(const r of [2,3,4,5,6,7,8]){g+=`<text x="${xs(r)}" y="${H-B+16}" text-anchor="middle">${r}</text>`}
+g+=`<text x="${L-6}" y="${T+4}" text-anchor="end">${mx}</text><text x="${L-6}" y="${ys(0)+4}" text-anchor="end">0</text><text x="${(L+W-R)/2}" y="${H-4}" text-anchor="middle" fill="var(--ink-2)">mean reviewer rating of the neighbour</text>`;
+for(const k of keys){const b=bins[k];const x=xs(k)-bw/2;let y=ys(0);const seg=(v,col,lab)=>{if(!v)return'';const h=ys(0)-ys(v);y-=h;const s=`<rect x="${x}" y="${y}" width="${bw}" height="${Math.max(0,h-2)}" rx="3" fill="${col}" stroke="var(--surface)" stroke-width="2" data-tip="${lab}: ${v} paper${v>1?'s':''} at ${k}"/>`;return s};g+=seg(b.rej,'var(--rej)','rejected')+seg(b.acc,'var(--acc)','accepted')}
+g+=`<line x1="${xs(P.knn_rating)}" x2="${xs(P.knn_rating)}" y1="${T}" y2="${H-B}" stroke="var(--ours)" stroke-width="2" stroke-dasharray="5 4"/>`;
+g+='</g></svg>';document.getElementById('dist').innerHTML=g}
+// ---- profile
+function profChart(){const a=DATA.profile_accepted,r=DATA.profile_rejected;const W=520,H=190,L=110,R=40,T=16;const keys=[['soundness','soundness'],['presentation','presentation'],['contribution','contribution']];const xs=v=>L+(v-1)/3*(W-L-R);
+let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="sub-score profile of accepted versus rejected neighbours"><g font-size="11.5" fill="currentColor">`;
+for(const v of [1,2,3,4]){g+=`<line x1="${xs(v)}" x2="${xs(v)}" y1="${T}" y2="${H-24}" stroke="var(--line)" stroke-dasharray="2 3"/><text x="${xs(v)}" y="${H-8}" text-anchor="middle">${v}</text>`}
+keys.forEach(([k,lab],i)=>{const y=T+14+i*48;g+=`<text x="${L-8}" y="${y+16}" text-anchor="end">${lab}</text>`;if(r)g+=`<rect x="${xs(1)}" y="${y}" width="${xs(r[k])-xs(1)}" height="12" rx="3" fill="var(--rej)" stroke="var(--surface)" stroke-width="2" data-tip="rejected neighbours (n=${r.n}): ${lab} ${fmt(r[k],2)}"/><text x="${xs(r[k])+6}" y="${y+10}" font-family="var(--mono)" font-size="11">${fmt(r[k],2)}</text>`;if(a)g+=`<rect x="${xs(1)}" y="${y+16}" width="${xs(a[k])-xs(1)}" height="12" rx="3" fill="var(--acc)" stroke="var(--surface)" stroke-width="2" data-tip="accepted neighbours (n=${a.n}): ${lab} ${fmt(a[k],2)}"/><text x="${xs(a[k])+6}" y="${y+26}" font-family="var(--mono)" font-size="11">${fmt(a[k],2)}</text>`});
+g+='</g></svg>';document.getElementById('prof').innerHTML=g}
+// ---- tooltips
+function tips(){for(const f of document.querySelectorAll('figure')){const t=document.createElement('div');t.className='tip';f.appendChild(t);f.addEventListener('mousemove',e=>{const el=e.target.closest('[data-tip]');if(!el){t.style.opacity=0;return}const r=f.getBoundingClientRect();t.textContent=el.getAttribute('data-tip');t.style.left=(e.clientX-r.left)+'px';t.style.top=(e.clientY-r.top)+'px';t.style.opacity=1});f.addEventListener('mouseleave',()=>t.style.opacity=0)}}
+// ---- table
+const N=DATA.neighbours.map(n=>({...n,sound:n.soundness.length?n.soundness.reduce((a,b)=>a+b,0)/n.soundness.length:null,pres:n.presentation.length?n.presentation.reduce((a,b)=>a+b,0)/n.presentation.length:null,contrib:n.contribution.length?n.contribution.reduce((a,b)=>a+b,0)/n.contribution.length:null}));
+let sortK='sim',sortD=-1;const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function draw(){const q=document.getElementById('q').value.toLowerCase(),dec=document.getElementById('dec').value,yr=document.getElementById('yr').value;let rows=N.filter(n=>(!q||n.title.toLowerCase().includes(q))&&(!dec||(dec==='acc')===n.accept)&&(!yr||n.year===yr));rows.sort((a,b)=>{const x=a[sortK],y=b[sortK];if(x==null)return 1;if(y==null)return -1;return (x<y?-1:x>y?1:0)*sortD});
+document.getElementById('count').textContent=rows.length+' of '+N.length;
+document.querySelector('#tbl tbody').innerHTML=rows.map(n=>`<tr><td class="n">${fmt(n.sim,3)}</td><td>${n.year}</td><td><details><summary style="font-size:13px;color:var(--ink)">${esc(n.title)}</summary><p class="abs">${esc(n.abstract)}… <a href="https://openreview.net/forum?id=${n.id}" target="_blank" rel="noopener">OpenReview</a></p></details></td><td><span class="chip ${n.accept?'acc':'rej'}">${esc(n.status)}</span></td><td class="n">${fmt(n.avg,2)}</td><td style="font-family:var(--mono);white-space:nowrap">${n.ratings.join(' ')}</td><td class="n">${fmt(n.sound,1)}</td><td class="n">${fmt(n.pres,1)}</td><td class="n">${fmt(n.contrib,1)}</td><td style="font-size:12px;color:var(--ink-2)">${esc(n.area)}</td></tr>`).join('')}
+for(const th of document.querySelectorAll('#tbl th')){const h=()=>{const k=th.dataset.k;if(sortK===k)sortD=-sortD;else{sortK=k;sortD=k==='title'||k==='status'||k==='area'||k==='year'?1:-1}draw()};th.addEventListener('click',h);th.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();h()}})}
+for(const id of ['q','dec','yr'])document.getElementById(id).addEventListener('input',draw);document.getElementById('reset').addEventListener('click',()=>{for(const id of ['q','dec','yr'])document.getElementById(id).value='';draw()});
+curveChart();distChart();profChart();tips();draw();
+})();
+</script>
